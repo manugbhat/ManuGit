@@ -1,0 +1,43 @@
+@CHARSET "ISO-8859-1";
+
+ table {
+	background-color: buttonface;
+	width: 1000px;
+	left: 35px;
+	right : 20px;
+}
+
+td {
+	padding-left: 5px;
+	padding-right: 14px;
+	padding-top: 10px;
+	padding-bottom: 3px;
+}
+.ui-datepicker {
+	width: 17em !important;
+	padding: .2em .2em 0;
+	display: none;
+}
+.ui-datepicker table {
+	width: 100%;
+	font-size: .9em;
+	border-collapse: collapse;
+	margin: 0 0 .4em;
+}
+.ui-datepicker th {
+	padding: .7em .3em;
+	text-align: center;
+	font-weight: bold;
+	border: 0;
+}
+.ui-datepicker td {
+	border: 0;
+	padding: 1px;
+}
+.ui-datepicker td span,
+.ui-datepicker td a {
+	display: block;
+	padding: .2em;
+	text-align: right;
+	text-decoration: none;
+}

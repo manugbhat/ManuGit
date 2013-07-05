@@ -55,7 +55,7 @@ a:hover {
 }
 
 .container {
-	width: 900px;
+	width: 1200px;
 	margin: 0px auto;
 }
 
@@ -143,7 +143,7 @@ a:hover {
 	float: left;
 	width: 280px;
 	height: 70px;
-	padding: 20px 0px 0px 250px;
+	padding: 20px 130px 0px 250px;
 }
 
 #search form {
@@ -482,7 +482,7 @@ a:hover {
 
 #three-column {
 	overflow: hidden;
-	padding: 10px 0px 50px 0px;
+	padding: 0 0 0 550px;
 }
 
 #three-column .tbox1 {

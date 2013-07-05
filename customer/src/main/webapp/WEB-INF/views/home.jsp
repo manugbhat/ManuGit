@@ -1,6 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html>
 <head>
@@ -53,7 +55,7 @@ function checkEmpty(){
 <div id="wrapper">
 	<div class="container">
 		<h1>Power <font color="red">capital</font> systems</h1>
-		<p>For clean and green power</p>
+		<p>Brand with power , joy forever </p>
 	</div>
 	<div id="menu-wrapper">
 		<div id="menu" class="container">
@@ -61,8 +63,9 @@ function checkEmpty(){
 				<li><a href="#">Home</a></li>
 				<li><a href="#">Product maintenance</a></li>
 				<li><a href="#">Administration</a></li>
-				
+				<li><a href="logout">LogOut</a></li>
 			</ul>
+			
 		</div>
 	</div>
 
@@ -85,7 +88,15 @@ function checkEmpty(){
 				<div class="content">
 					<h2>Payment Due Reminders</h2>
 					<ul id="scroller">
-						<li><a href="customercreate">Customer 1 Name </a></li>
+						<c:forEach var="customer" items="${dues}">
+						    <c:if test="${customer.key == 'duepayments'}">
+							<c:forEach var="custid" items="${customer.value}">
+								<li>${custid}</li>
+							</c:forEach>
+							</c:if>
+													
+						</c:forEach>
+						<!-- <li><a href="customercreate">Customer 1 Name </a></li>
 						<li><a href="customercreate">Customer 2 Name</a></li>
 						<li><a href="customercreate"><strong><font color="red">Customer 3 Name</font></strong></a></li>
 						<li><a href="customercreate">Customer 4 Name</a></li>
@@ -93,7 +104,7 @@ function checkEmpty(){
 						<li><a href="customercreate">Customer 6 Name</a></li>
 						<li><a href="customercreate">Customer 7 Name</a></li>
 						<li><a href="customercreate">Customer 8 Name</a></li>
-						<li><a href="customercreate">Customer 9 Name</a></li>
+						<li><a href="customercreate">Customer 9 Name</a></li>-->
 						
 					</ul>
 					
@@ -106,16 +117,13 @@ function checkEmpty(){
 				<div class="content">
 					<h2>Service Due Reminders</h2>
 					<ul id="scroller1">
-						<li><a href="customercreate">Customer 1 Name</a></li>
-						<li><a href="customercreate">Customer 2 Name</a></li>
-						<li><a href="customercreate">Customer 3 Name</a></li>
-						<li><a href="customercreate">Customer 4 Name</a></li>
-						<li><a href="customercreate">Customer 5 Name</a></li>
-						<li><a href="customercreate">Customer 6 Name</a></li>
-						<li><a href="customercreate">Customer 7 Name</a></li>
-						<li><a href="customercreate">Customer 8 Name</a></li>
-						<li><a href="customercreate">Customer 9 Name</a></li>
-						
+						<c:forEach var="customer" items="${dues}">
+						<c:if test="${customer.key == 'dueservices'}">
+							<c:forEach var="custid" items="${customer.value}">
+								<li>${custid}</li>
+							</c:forEach>
+						</c:if>
+						</c:forEach>
 					</ul>
 				</div>
 			</div>
