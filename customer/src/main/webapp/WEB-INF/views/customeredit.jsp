@@ -3,6 +3,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page import="com.powercap.customer.service.CustomerPurchase" %>
+<%@page import="java.util.List" %>
 
 <html>
 <head>
@@ -37,7 +39,7 @@
 </head>
 <body>
 	<form action="createcustomerpurchase" method="post">
-	<div class="container">
+	<div class="containercreate">
 	  <c:forEach var="purchase" items="${customerpurchases}">
 	     
 	  
@@ -65,9 +67,9 @@
 	   
 	   <tr><td></td></tr>
 	   <tr><td></td></tr>
-	   <tr><td><strong>---------------------</strong></td><td><strong>Products</strong></td><td><strong>---------------------</strong></td></tr>
+	   <h2 align="center" style="float : center;width : 800px ; background : none repeat scroll 0 0 #CDCDCD">Products</h2>
 	   <tr></tr>
-	   <tr><td>${purchase.prodName}</td>
+	   <tr><td>${purchase.prodName}</td><td>Quantity</td>
 	   <c:if test="${not empty purchase.prodmodel}" >
 	   		<td>
 	   			Model
@@ -114,22 +116,37 @@
 		   	   </select>
 		   </c:if>
 		   <c:if test="${purchase.prodName == 'Capital LED Light'}">
-	   		  <select name="capitalled" id="capitalled">
-	   		  	<option selected="selected">${purchase.productType}</option>
-		   		<option>3W</option>
-		   		<option>6W</option>
-		   		<option>9W</option>
-		   		<option>12W</option>
-		   		<option>15W</option>
-		   		<option>18W</option>
-		   		<option>21W</option>
-		   		<option>24W</option>
-		   		<option>27W</option>
-		   		<option>30W</option>
-		   		<option>36W</option>
-		   		<option>45W</option>
-		   		
-		   	   </select>
+		    
+		  	 <%
+				List<CustomerPurchase> purchases = (List<CustomerPurchase>)request.getAttribute("customerpurchases");
+				for ( CustomerPurchase purchase : purchases){
+					if(purchase.getProdName().equalsIgnoreCase("Capital LED Light"))
+					{
+						String prodtype = purchase.getProductType();
+						if(prodtype.indexOf("#") != -1)
+						{
+							String[] typeQuant = prodtype.split("#");
+							String[] types = typeQuant[0].split(",");
+							String[] quants = typeQuant[1].split(",");%>
+							<select multiple name="capitalled" id="capitalled">
+							<%for(int i =0 ; i < types.length ; i++)
+							{  String type = types[i];%>
+								<option selectrd="selected"><%=type%></option>
+							<%}%>
+							</select></td><td>
+							<% for(int j =0 ; j < quants.length ; j++){
+								String quantity = "ledquant"+types[j];
+								String value = quants[j];
+								%>
+							
+							<input type="text" id="<%=quantity%>" name="<%=quantity%>" value="<%=value%>">
+							<%} %>
+						<%}
+					}
+				}
+				%>
+				
+	   		 
 		   </c:if>
 		   <c:if test="${purchase.prodName == 'Capital UPS'}">
 	   		  <select name="capitalups" id="capitalups">

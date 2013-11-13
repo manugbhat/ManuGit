@@ -23,6 +23,16 @@
 		}); */
 	});
 	
+	function checkProdSelection()
+	{
+		if($("[id$=prod]").is(":checked"))
+			return true;
+		else {
+			alert("You have to select one of the products checkbox!");
+			return false;
+		}
+		
+	}
 	
 	function calculateTotalBalance(unitrate,quantity,vat,discount,total,balance)
 	{
@@ -33,23 +43,50 @@
 		discval = $('#'+discount).val();
 		totalval = $('#'+total).val();
 		balanceval = $('#'+balance).val();
-		if(unitrateval!=null && quantval!=null && vatval!=null && discval!=null)
-			{
-				prodrate = unitrateval * quantval;
-			    prodrate += prodrate * (vatval/100);
-			    prodrate -= discval;
-			    $('#'+total).val(prodrate);
-			    $('#'+balance).val(prodrate);
+		
+		if (!validateNumber(unitrateval)) {
+				$('#' + unitrate).val(0);
 			}
-	}
+			if (!validateNumber(quantval)) {
+				$('#' + quantity).val(0);
+			}
+			if (!validateNumber(vatval)) {
+				$('#' + vat).val(0);
+			}
+			if (!validateNumber(discval)) {
+				$('#' + discount).val(0);
+			}
+
+			if (unitrateval != null && quantval != null && vatval != null
+					&& discval != null) {
+				prodrate = unitrateval * quantval;
+				prodrate += prodrate * (vatval / 100);
+				prodrate -= discval;
+				$('#' + total).val(prodrate);
+				$('#' + balance).val(prodrate);
+			}
+		}
+		function validateNumber(value) {
+			if (isNaN(value)) {
+				alert("Please enter a valid number");
+				return false;
+			}
+			return true;
+		}
+		
+		function getInputEleName(selected){
+  			return "ledquant"+selected;
+  		}
 	</script>
 
 </head>
 <body>
 	
-	<div class="container">
-	<form action="createcustomerpurchase" method="post">
-	   <table>
+	<div id="customerform" class="containercreate">
+	<form action="createcustomerpurchase" method="post" onsubmit="return checkProdSelection()">
+	<h2 align="center" style="width : 550px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Customer</h2>
+	</br>
+	   <table class="customerinfo">
 	   <tr><td>Dealer Name</td></tr>
 	   <tr><td><input type="text" name="dealer" id="dealer"/></td></tr>
 	   <tr><td><font color="red" >Customer Name*</font></td></tr>
@@ -69,11 +106,15 @@
 	   
 	   <tr><td></td></tr>
 	   <tr><td></td></tr>
-	   <tr><td><strong>---------------------</strong></td><td><strong>Products</strong></td><td><strong>---------------------</strong></td></tr>
-	   <tr></tr>
+	   </table>
+	   </br>
+	  <h2 align="center" style="width : 1050px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Products</h2>
+	   </br>
+	   <table class="solarcapacity">
 	   <tr><td><input type="checkbox" name="solarcapprod" id="solarcapprod">Solar Capacity</td><td>Model</td><td>O Cladding</td><td>Warranty</td><td>Free Service</td></tr>
 	   <tr>
 		   <td><select name="solarcapacity" id="solarcapacity">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>100</option>
 		   		<option>150</option>
 		   		<option>200</option>
@@ -84,18 +125,21 @@
 		   	   </select>
 		   </td>
 		   <td><select name="solarcapacitymodel" id="solarcapacitymodel">
+		  		<option selected="selected">Choose one..</option>
 		   		<option>ETC</option>
 		   		<option>FPC</option>
 		   		
 		   	   </select>
 		   </td>
 		   <td><select name="solarcapacitycladding" id="solarcapacitycladding">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>SS</option>
 		   		<option>PC</option>
 		   		
 		   	   </select>
 		   </td>
 		   <td><select name="solarcapacitywarranty" id="solarcapacitywarranty">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -109,6 +153,7 @@
 		   	   </select>
 		   </td>
 		   <td><select name="solarcapacityfreeserv" id="solarcapacityfreeserv">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -129,10 +174,13 @@
 	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
 	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
 	   <tr><td><input type="text" name="solarfinalunitrate" id="solarfinalunitrate"/></td><td><input type="text" name="solarfinalquantity" id="solarfinalquantity"/></td><td><input type="text" name="solarfinalvat" id="solarfinalvat"/></td><td><input type="text" name="solarfinaldiscount" id="solarfinaldiscount" onblur="calculateTotalBalance('solarfinalunitrate','solarfinalquantity','solarfinalvat','solarfinaldiscount','solarfinaltotal','solarfinalbalance')"/></td><td><input type="text" name="solarfinaltotal" id="solarfinaltotal"/></td><td><input type="text" name="solarfinalbalance" id="solarfinalbalance"/></td></tr>
-		
+	   </table>
+	   </br>
+	   <table class="capitalwater">
 	   <tr><td><input type="checkbox" name="capitwaterpurpprod" id="capitwaterpurpprod">Capital water purifiers</td><td>Warranty</td><td>Free Service</td></tr>
 	   <tr>
 		   <td><select name="capitalwaterpure" id="capitalwaterpure">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>Ultra Pure</option>
 		   		<option>Compaq UV</option>
 		   		<option>UV 100LPH</option>
@@ -148,6 +196,7 @@
 		   	   </select>
 		   </td>
 		    <td><select name="capitalwaterpurewarranty" id="capitalwaterpurewarranty">
+		    	<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -161,6 +210,7 @@
 		   	   </select>
 		   </td>
 		   <td><select name="capitalwaterpurefreeserv" id="capitalwaterpurefreeserv">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -180,10 +230,12 @@
 	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
 	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
 	   <tr><td><input type="text" name="waterpurfinalunitrate" id="waterpurfinalunitrate"/></td><td><input type="text" name="waterpurfinalquantity" id="waterpurfinalquantity"/></td><td><input type="text" name="waterpurfinalvat" id="waterpurfinalvat"/></td><td><input type="text" name="waterpurfinaldiscount" id="waterpurfinaldiscount" onblur="calculateTotalBalance('waterpurfinalunitrate','waterpurfinalquantity','waterpurfinalvat','waterpurfinaldiscount','waterpurfinaltotal','waterpurfinalbalance')"/></td><td><input type="text" name="waterpurfinaltotal" id="waterpurfinaltotal"/></td><td><input type="text" name="waterpurfinalbalance" id="waterpurfinalbalance"/></td></tr>
-		   
-	   <tr><td><input type="checkbox" name="capitledlightpprod" id="capitledlightpprod">Capital LED Light</td><td>Model</td><td>Warranty</td><td>Free Service</td></tr>
+		</table>
+		</br>
+		<table class="capitalled"> 
+	   <tr><td><input type="checkbox" name="capitledlightpprod" id="capitledlightpprod">Capital LED Light</td><td>Quantity</td><td>Model</td><td>Warranty</td><td>Free Service</td></tr>
 	   <tr>
-		   <td><select name="capitalled" id="capitalled">
+		   <td><select multiple name="capitalled" id="capitalled">
 		   		<option>3W</option>
 		   		<option>6W</option>
 		   		<option>9W</option>
@@ -197,14 +249,85 @@
 		   		<option>36W</option>
 		   		<option>45W</option>
 		   	   </select>
-		   </td>
+		   	   </td>
+		   	   <td>
+		   	    		
+			   </td>
+		  
+		   
+		  <script type="text/javascript">
+		  	$(
+		  		function(){
+		  			var	alloptions = [] ;
+		  			$('#capitalled option').each(
+		  				function(i,v){
+		  					alloptions[i]= $(this).val();
+		  				}		
+		  			);
+		  			
+					$('#capitalled').change(
+						function(){
+							that = this;
+							var selectedvals = $(this).val();
+							$('#capitalled option').each(
+					  				function(i,v){
+					  					alloptions[i]= $(this).val();
+					  				}		
+					  			);
+
+							$.each(selectedvals,function(ind,val){
+								if(val != 'Choose one..')
+									{
+									 var paramname = getInputEleName(val);
+									for(var i=0;i<alloptions.length;i++){
+										if(alloptions[i] == val) {
+											alloptions[i] = '';
+										}
+									 }
+									for(var j=0;j<alloptions.length;j++){
+										var unselectedval = alloptions[j];
+										if(unselectedval != '')
+											{
+												var unselparamname = getInputEleName(unselectedval);
+												$('#'+unselparamname).remove();
+											}
+									}
+									
+									 if($('#'+paramname).length == 0 ){
+										 var input = '<input type="text" id="'+paramname+'" name="'+paramname+'" style="width : 40px;"/></br>';
+										 $(that).parent().next().append(input);
+									 }
+									
+									}
+								
+							});
+						}		
+					);
+					$('body').on('keyup','[id^=ledquant]',function(){
+						var all = $('[id^=ledquant]');
+						var total = 0;
+						for(var i=0 ; i < all.length ; i++) {
+							if(isNaN($(all[i]).val())){ alert("Please enter valid number for quantity "); return;}
+							total += +$(all[i]).val();
+						}
+						$('#capitalledestquantity').val(total);
+						$('#capitalledfinalquantity').val(total);
+					});
+					
+		  		}
+		  	);
+		  	
+		  	
+		  </script> 
 		   <td><select name="capitalledmodel" id="capitalledmodel">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>Indoor</option>
 		   		<option>Outdoor</option>
 		   		
 		   	   </select>
 		   </td>
 			<td><select name="capitalledwarranty" id="capitalledwarranty">
+				<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -218,6 +341,7 @@
 		   	   </select>
 		   </td>
 		   <td><select name="capitalledfreeserv" id="capitalledfreeserv">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -237,10 +361,13 @@
 	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
 	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
 	   <tr><td><input type="text" name="capitalledfinalunitrate" id="capitalledfinalunitrate"/></td><td><input type="text" name="capitalledfinalquantity" id="capitalledfinalquantity"/></td><td><input type="text" name="capitalledfinalvat" id="capitalledfinalvat"/></td><td><input type="text" name="capitalledfinaldiscount" id="capitalledfinaldiscount" onblur="calculateTotalBalance('capitalledfinalunitrate','capitalledfinalquantity','capitalledfinalvat','capitalledfinaldiscount','capitalledfinaltotal','capitalledfinalbalance')"/></td><td><input type="text" name="capitalledfinaltotal" id="capitalledfinaltotal"/></td><td><input type="text" name="capitalledfinalbalance" id="capitalledfinalbalance"/></td></tr>
-	
+	   </table>
+	   </br>
+	   <table class="capitalups">
 	   <tr><td><input type="checkbox" name="capitalupsprod" id="capitalupsprod">UPS</td><td>Battery</td><td>Model</td><td>Warranty</td><td>Free Service</td></tr>
 	   <tr>
 		   <td><select name="capitalups" id="capitalups">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>600 VA</option>
 		   		<option>850 VA</option>
 		   		<option>1 KVA</option>
@@ -255,6 +382,7 @@
 		   	   </select>
 		   </td>
 		   <td><select name="capitalupsbattery" id="capitalupsbattery">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>7.2 AH</option>
 		   		<option>17 AH</option>
 		   		<option>20 AH</option>
@@ -271,6 +399,7 @@
 		   	   </select>
 		   </td>
 		   <td><select name="capitalupsmodel" id="capitalupsmodel">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>SMF</option>
 		   		<option>Automotive</option>
 		   		<option>Flat tubular</option>
@@ -280,6 +409,7 @@
 		   	   </select>
 		   </td>
 			<td><select name="capitalupswarranty" id="capitalupswarranty">
+				<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -293,6 +423,7 @@
 		   	   </select>
 		   </td>
 		   <td><select name="capitalupsfreeserv" id="capitalupsfreeserv">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -312,16 +443,20 @@
 		   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
 		   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
 		   <tr><td><input type="text" name="capitalupsfinalunitrate" id="capitalupsfinalunitrate"/></td><td><input type="text" name="capitalupsfinalquantity" id="capitalupsfinalquantity"/></td><td><input type="text" name="capitalupsfinalvat" id="capitalupsfinalvat"/></td><td><input type="text" name="capitalupsfinaldiscount" id="capitalupsfinaldiscount" onblur="calculateTotalBalance('capitalupsfinalunitrate','capitalupsfinalquantity','capitalupsfinalvat','capitalupsfinaldiscount','capitalupsfinaltotal','capitalupsfinalbalance')"/></td><td><input type="text" name="capitalupsfinaltotal" id="capitalupsfinaltotal"/></td><td><input type="text" name="capitalupsfinalbalance" id="capitalupsfinalbalance"/></td></tr>
-		
+		</table>
+	   </br>
+	   <table class="gasgeyser">
 	   <tr><td><input type="checkbox" name="gasgeyserpprod" id="gasgeyserprod">Gas Geyser Model</td><td>Warranty</td><td>Free Service</td></tr>
 	   <tr>
 	   	<td><select name="capitalgasgeyser" id="capitalgasgeyser">
+	   			<option selected="selected">Choose one..</option>
 		   		<option>DELUXE</option>
 		   		<option>Gold</option>
 		   		<option>Others</option>
 		   	   </select>
 		   </td>
 		   <td><select name="capitalgasgeyserwarranty" id="capitalgasgeyserwarranty">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -335,6 +470,7 @@
 		   	   </select>
 		   </td>
 		   <td><select name="capitalgasgeyserfreeserv" id="capitalgasgeyserfreeserv">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -354,10 +490,13 @@
 	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
 	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
 	   <tr><td><input type="text" name="capitalgasgeyserfinalunitrate" id="capitalgasgeyserfinalunitrate"/></td><td><input type="text" name="capitalgasgeyserfinalquantity" id="capitalgasgeyserfinalquantity"/></td><td><input type="text" name="capitalgasgeyserfinalvat" id="capitalgasgeyserfinalvat"/></td><td><input type="text" name="capitalgasgeyserfinaldiscount" id="capitalgasgeyserfinaldiscount" onblur="calculateTotalBalance('capitalgasgeyserfinalunitrate','capitalgasgeyserfinalquantity','capitalgasgeyserfinalvat','capitalgasgeyserfinaldiscount','capitalgasgeyserfinaltotal','capitalgasgeyserfinalbalance')"/></td><td><input type="text" name="capitalgasgeyserfinaltotal" id="capitalgasgeyserfinaltotal"/></td><td><input type="text" name="capitalgasgeyserfinalbalance" id="capitalgasgeyserfinalbalance"/></td></tr>
-	
+	   </table>
+	   </br>
+	   <table class="solarlight">
 	   <tr><td><input type="checkbox" name="solarlightprod" id="solarlightprod">Solar Light</td><td>Battery</td><td>Battery Model</td><td>Quantity</td><td>LED lights</td><td>Quantity</td><td>Backup</td><td>Warranty</td><td>Free Service</td></tr>
 	   <tr>
 		   <td><select name="capitalsolarlight" id="capitalsolarlight">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>2 Light Kit</option>
 		   		<option>5 Light Kit</option>
 		   		<option>7 Light Kit</option>
@@ -375,6 +514,7 @@
 		   	   </select>
 		   </td>
 		   <td><select name="capitalsolarlightbattery" id="capitalsolarlightbattery">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>7.2 AH</option>
 		   		<option>17 AH</option>
 		   		<option>20 AH</option>
@@ -391,6 +531,7 @@
 		   	   </select>
 		   </td>
 		   <td><select name="capitalsolarlightmodel" id="capitalsolarlightmodel">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>SMF</option>
 		   		<option>Automotive</option>
 		   		<option>Flat tubular</option>
@@ -401,6 +542,7 @@
 		   </td>
 		   <td>
 		   	<select name="capitalsolarlightquant" id="capitalsolarlightquant">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -428,6 +570,7 @@
 		   	   </select>
 		   </td>
 		    <td><select name="capitalsolarlightled" id="capitalsolarlightled">
+		    	<option selected="selected">Choose one..</option>
 		   		<option>3W</option>
 		   		<option>6W</option>
 		   		<option>9W</option>
@@ -445,6 +588,7 @@
 		   <td><input type="text" width="10px" maxlength="4" name="capitalsolarlightledquant" id="capitalsolarlightledquant"/></td>
 		     <td>
 		   	<select name="capitalsolarlightledbackup" id="capitalsolarlightledbackup">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -472,6 +616,7 @@
 		   	   </select>
 		   </td>
 			<td><select name="capitalsolarlightledwarranty" id="capitalsolarlightledwarranty">
+				<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -485,6 +630,7 @@
 		   	   </select>
 		   </td>
 		   <td><select name="capitalsolarlightledfreeserv" id="capitalsolarlightledfreeserv">
+		   		<option selected="selected">Choose one..</option>
 		   		<option>1</option>
 		   		<option>2</option>
 		   		<option>3</option>
@@ -507,7 +653,9 @@
 	
 	   </table>
 	   <br><br>
-	   <tr><td><button type="submit">Submit</button></td><td><button type="reset">Reset</button></td><button type="button" onclick="javascript:document.location.href = 'home';">Back</button></tr>
+	   <table>
+	   <tr><td><button type="submit">Submit</button></td><td><button type="reset">Reset</button></td><td><button type="button" onclick="javascript:document.location.href = 'home';">Back</button></td></tr>
+	   </table>
 	   </form>
 	</div>
 	

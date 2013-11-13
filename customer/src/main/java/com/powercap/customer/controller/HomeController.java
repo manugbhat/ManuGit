@@ -15,11 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.powercap.customer.exceptions.NoDBException;
 import com.powercap.customer.service.CustomerPurchase;
 import com.powercap.customer.service.CustomerPurchaseService;
 import com.powercap.customer.service.CustomerService;
@@ -71,22 +73,34 @@ public class HomeController {
 	{
 		String loginId = request.getParameter("username");
 		String password = request.getParameter("password");
-		
-		boolean valid = userServ.doLogin(loginId, password);
-		
-		List dueCustomers = paymentService.getPaymentReminders();
-		List dueServices = custService.getDueCustomers();
-		Map duemap = new HashMap();
-		duemap.put("duepayments", dueCustomers);
-		duemap.put("dueservices", dueServices);
-		
-		if(valid)
-		{
-			return new ModelAndView("home","dues",duemap);
-		}
-		else
+		if((loginId == null && password == null) || (loginId.equals("") && password.equals(""))) 
 		{
 			return new ModelAndView("login");
+		}
+		try{
+			boolean valid = userServ.doLogin(loginId, password);
+			
+			if(valid)
+			{
+				List dueCustomers = paymentService.getPaymentReminders();
+				List dueServices = custService.getDueCustomers();
+				Map duemap = new HashMap();
+				duemap.put("duepayments", dueCustomers);
+				duemap.put("dueservices", dueServices);
+				return new ModelAndView("home","dues",duemap);
+			}
+			else
+			{
+				ModelAndView error = new ModelAndView("login");
+				error.addObject("error", "InvalidLogin");
+				return error;
+			}
+		}
+		catch(NoDBException nodbe) {
+			nodbe.printStackTrace();
+			ModelAndView error = new ModelAndView("login");
+			error.addObject("error", "NoDB");
+			return error;
 		}
 		
 	}
@@ -135,7 +149,7 @@ public class HomeController {
 	
 	public ModelAndView editCustomer(@RequestParam String customerId) throws IOException, SQLException, java.text.ParseException{
 		System.out.println("Details for customer Id " + customerId);
-		List purchases = purchaseService.getCustomerPurchases(customerId);
+		List <CustomerPurchase>purchases = purchaseService.getCustomerPurchases(customerId);
 		return new ModelAndView("customeredit","customerpurchases",purchases);
 	}
 	

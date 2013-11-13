@@ -3,9 +3,14 @@ package com.powercap.customer.utils;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.powercap.customer.service.CustomerPurchase;
 
@@ -200,9 +205,11 @@ public class CustomerPurchaseHelper {
 		purchase.setDateofOrder(request.getParameter("dateoforder").toString());
 		purchase.setDateofSupply(request.getParameter("dateofsupply").toString());
 		purchase.setDateofInstall(request.getParameter("dateofinstallation").toString());
-				
-	
-	   purchase.setProductType(request.getParameter("capitalled").toString());
+		
+		Map <String,String>typequantmap = prepareTypeQuantMap(request);
+		for(Map.Entry<String, String> entry: typequantmap.entrySet()) {
+			purchase.setProductType(entry.getKey()+"#"+entry.getValue());
+		}
 	   purchase.setProdName("Capital LED Light");
 	   purchase.setProdmodel(request.getParameter("capitalledmodel").toString());
 	   purchase.setWarranty(request.getParameter("capitalledwarranty")!=null?Integer.parseInt(request.getParameter("capitalledwarranty")):0);
@@ -224,6 +231,33 @@ public class CustomerPurchaseHelper {
 	   
 	   
 		return purchase;
+	}
+
+	private Map<String,String> prepareTypeQuantMap(HttpServletRequest request) {
+		String[] types = request.getParameterValues(("capitalled"));
+		Map<String,String> typeQuantMap = new HashMap<String,String>();
+		if(types == null || types.length == 0) 
+		{
+			return Collections.EMPTY_MAP;
+		}
+		StringBuilder quantParams = new StringBuilder();
+		for(int i = 0 ; i < types.length ; i++) 
+		{
+			String param = request.getParameter(getParam(types[i]));
+			quantParams.append(param).append(",");
+			
+		}
+		typeQuantMap.put(StringUtils.join(types, ","), quantParams.toString());
+		return typeQuantMap;
+		
+	}
+	
+	private String getParam(String type)
+	{
+		StringBuilder param = new StringBuilder();
+		param.append("ledquant");
+		param.append(type);
+		return param.toString();
 	}
 
 	private CustomerPurchase prepareWaterPurifierPurchase(HttpServletRequest request) {

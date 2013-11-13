@@ -291,13 +291,13 @@ public class CustomerPurchaseService {
 		
 	}
 
-	public List getCustomerPurchases(String customerId) throws SQLException, ParseException {
+	public List<CustomerPurchase> getCustomerPurchases(String customerId) throws SQLException, ParseException {
 
 			String custSQL = "select name,dealername,address,emailid,phonenum1,phonenum2 from customer where customerid = ?";
 			String purchaseSQL = "select purchaseid,billno,orderformno,contactno,estunitrate,estquantity,estvat,estdiscount,esttotal,finalunitrate,finalquantity,finalvat,finaldiscount,finaltotal,productid," +
 								 "amount,balance,warranty,freeservice,dateoforder,dateofsupply,dateofinstallation from purchases where customerid = ?";
 			boolean customerFilled = false;
-			List customerPurchases = new ArrayList<CustomerPurchase>();
+			List <CustomerPurchase>customerPurchases = new ArrayList<CustomerPurchase>();
 			CustomerPurchase customerPurchase = new CustomerPurchase();
 			if(!customerFilled)
 			{

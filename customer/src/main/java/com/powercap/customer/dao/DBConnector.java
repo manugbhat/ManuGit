@@ -42,11 +42,7 @@ public class DBConnector {
 	}
 	public static void main(String args[]) throws SQLException
 	{
-		try{
-		    Class.forName(driver); 
-		} catch(java.lang.ClassNotFoundException e) {
-		    e.printStackTrace();
-		}
+		if(getConnection() !=null)System.out.println("connection est.");
 
 		try {
 		  /*  conn = DriverManager.getConnection(connectionURL); 
