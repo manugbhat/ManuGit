@@ -18,32 +18,115 @@
 	<script src="resources/jquery-ui-1.10.1.custom.js"></script>
 	<script type="text/javascript">
 	$(function(){
-		$('#dateoforder').datepicker({dateFormat : "dd/mm/yy"});
-		$('#dateofsupply').datepicker({dateFormat : "dd/mm/yy"});
-		$('#dateofinstallation').datepicker({dateFormat : "dd/mm/yy"});
-		
-		$("[id$=finalbalance]").click(function(){
-			var purchaseid = $('#purchaseid').val();
+		$('#dateoforder').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
+		$('#dateofsupply').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
+		$('#dateofinstallation').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
+		$('[id$=dateofpayment]').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
+		GLOBAL = { "solarcapacity" : { nameCount : 0 },
+				   "capitalwater" : { nameCount : 0 },
+				   "capitalled" : { nameCount : 0 },
+				   "capitalups" : { nameCount : 0 },
+				   "gasgeyser" : { nameCount : 0 },
+				   "solarlight" : { nameCount : 0 },
+				   };
+		$("[id$=estbalance]").on({
+			click : function(e){
+							$(this).parents().eq(3).prev().show();
+						},
 			
-			window.open('updatepayment?purchaseId='+purchaseid,'Payment update','height=400,width=400');
+			});
+		
+		$(".advpmtsave").click(function(){
+			parentid = $(this).parent().attr('id');
+			  nameCount = 0;
+			  $.each(GLOBAL,function(val,ind){
+				  if(val == parentid) {
+					  nameCount = ind.nameCount;
+				  }
+			  });
+			  dop = $(this).prev().prev().prev().val();
+			  amt = $(this).prev().prev().val();
+			  cc = $(this).prev().val();
+			  
+			  dopid = $(this).prev().prev().prev().attr('id');
+			  amtid = $(this).prev().prev().attr('id');
+			  ccid = $(this).prev().attr('id');
+			  
+			  nameCount += 1;
+			  dateOfPaymentName = dopid+nameCount;
+			  amountName = amtid+nameCount;
+			  cashorchekName = ccid+nameCount;
+			  
+			  $.each(GLOBAL,function(val,ind){
+				  if(val == parentid) {
+					  ind.nameCount = nameCount;
+				  }
+			  });
+			  
+			  formhtml = '<input type="hidden" name="'+dateOfPaymentName+'" value="'+dop+'"/>'+
+				  		 '<input type="hidden" name="'+amountName+'" value="'+amt+'"/>'+
+				  		 '<input type="hidden" name="'+cashorchekName+'" value="'+cc+'"/>';
+			  html = '<div style="width: 190px ;float : left" >'+dop+'</div>'+
+			  		 '<div style="width: 200px ;float : left" >'+amt+'</div>'+
+			  		 '<div style="width: 200px ;float : left" >'+cc+'</div>';
+			  $(this).parent().append(html);
+			  $(this).parent().append(formhtml);
+			  finalbalance = $(this).parent().next().find('[id$=estbalance]').val();
+			  if(finalbalance != "")
+				  {
+				   finalbalance -= amt;
+				   finalbalance = (Math.round(finalbalance*100)/100);
+				  }
+			  
+			  $(this).parent().next().find('[id$=estbalance]').val(finalbalance);
+			 
+		});
+		
+		$('[id^=ledquant]').on('keyup',function(){
+			var all = $('[id^=ledquant]');
+			var total = 0;
+			for(var i=0 ; i < all.length ; i++) {
+				if(isNaN($(all[i]).val())){ alert("Please enter valid number for quantity "); return;}
+				total += +$(all[i]).val();
+			}
+			$('#capitalledestquantity').val(total);
+			$('#capitalledfinalquantity').val(total);
+		});
+		
+		$(".advpmtclose").click(function(){
+			$(this).parent().hide();
 		});
 	});
+	
+	
+	function checkProdSelection()
+	{
+		if($("[id$=prod]").is(":checked"))
+			return true;
+		else {
+			alert("You have to select one of the products checkbox!");
+			return false;
+		}
+		
+	} 
+	
 	function openServiceDetails()
 	{
 		var customerid = $('#customerId').text();
-		window.open('updateservice?customerId='+customerid , 'Service Update','height=400,width=400');
+		window.open('updateservice?customerId='+customerid , 'Service Update','height=1500,width=1400,resizable=true');
 		return false;
 	}
 	</script>
 
 </head>
 <body>
-	<form action="createcustomerpurchase" method="post">
+	<form action="createcustomerpurchase" onsubmit="return checkProdSelection()"  method="post">
 	<div class="containercreate">
+	<h2 align="center" style="width : 550px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Customer</h2>
 	  <c:forEach var="purchase" items="${customerpurchases}">
 	     
 	  
-	   <table>
+	   <table class="customerinfo">
 	   <input type="hidden" id="purchaseid" value="${purchase.purchaseid}"/>
 
 	   <tr><td>Customer ID </td> <c:if test="${not empty purchase.customerId}"><td><label id="customerId">${purchase.customerId}</label></td></c:if>
@@ -63,12 +146,14 @@
 	   <tr><td><input type="text" name="billno" id="billno" value="<c:out value="${purchase.billno}"/>"/></td><td><input type="text" name="orderformno" id="orderformno"  value="<c:out value="${purchase.orderformno}"/>"/></td><td><input type="text" name="contactno" id="contactno" value="<c:out value="${purchase.contactno}"/>"/></td></tr>
 	   <tr><td></td></tr>
 	   <tr><td></td></tr>
-	   
-	   
 	   <tr><td></td></tr>
 	   <tr><td></td></tr>
-	   <h2 align="center" style="float : center;width : 800px ; background : none repeat scroll 0 0 #CDCDCD">Products</h2>
-	   <tr></tr>
+	   </table>
+	    <h2 align="center" style="width : 1050px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Products</h2>
+	   <table>
+	   <tr>
+	   <td><input type="checkbox" name="solarcapprod" id="solarcapprod"></td>
+	   </tr>
 	   <tr><td>${purchase.prodName}</td><td>Quantity</td>
 	   <c:if test="${not empty purchase.prodmodel}" >
 	   		<td>
@@ -119,6 +204,7 @@
 		    
 		  	 <%
 				List<CustomerPurchase> purchases = (List<CustomerPurchase>)request.getAttribute("customerpurchases");
+		  		String[] allWatts = new String[]{"3W","6W","9W","12W","15W","18W","21W","24W","27W","30W","36W","45W"};
 				for ( CustomerPurchase purchase : purchases){
 					if(purchase.getProdName().equalsIgnoreCase("Capital LED Light"))
 					{
@@ -127,22 +213,52 @@
 						{
 							String[] typeQuant = prodtype.split("#");
 							String[] types = typeQuant[0].split(",");
-							String[] quants = typeQuant[1].split(",");%>
+							String[] quants = typeQuant[1].split(",");
+							String[] restOfWatt = new String[12];
+							for(int x=0; x < allWatts.length ;x++) {
+								for(int ind=0; ind < types.length ; ind++) {
+								
+									if(types[ind].equals(allWatts[x])){
+										allWatts[x]="";
+									}
+									
+								}
+								
+							}
+							System.out.println(allWatts.length);
+							System.out.println(restOfWatt.length);
+							%>
 							<select multiple name="capitalled" id="capitalled">
 							<%for(int i =0 ; i < types.length ; i++)
 							{  String type = types[i];%>
-								<option selectrd="selected"><%=type%></option>
-							<%}%>
+								<option selected="selected"><%=type%></option>
+							<%}
+							System.out.println(types.length);
+							  for(int j1=0 ; j1 < (allWatts.length) ; j1++ ) {
+							     String watt = allWatts[j1];
+							     if(!watt.equals("")){%>
+								  <option><%=watt%></option>
+							 <% }
+							   }
+							%>
 							</select></td><td>
 							<% for(int j =0 ; j < quants.length ; j++){
 								String quantity = "ledquant"+types[j];
 								String value = quants[j];
 								%>
 							
-							<input type="text" id="<%=quantity%>" name="<%=quantity%>" value="<%=value%>">
-							<%} %>
-						<%}
+							<input type="text" id="<%=quantity%>" name="<%=quantity%>" value="<%=value%>"/>
+							<%}
+							System.out.println(quants.length);
+							for(int j2=0; j2<(allWatts.length) ; j2++) {
+								String wattInput = "";
+								 if(!allWatts[j2].equals("")){
+									 wattInput = "ledquant"+allWatts[j2];%>
+									 <input type="text" id="<%=wattInput%>" name="<%=wattInput%>"/>
+								<% }
+							}
 					}
+				 }
 				}
 				%>
 				
@@ -535,12 +651,55 @@
 		       </c:when>
 	       </c:choose>
 	   	   </td>
+	   	   
+	   	    <div name="advancepayment" id="advancepayment" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
+			
+				  <h4>Update advance payments</h4>
+				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
+				  <c:choose>
+				       <c:when test="${purchase.prodName == 'Solar Capacity'}">
+				       		<input type="text" name="solardateofpayment" id="solardateofpayment"/>
+							<input type="text" name="solaramount" id="solaramount"/>
+							<input type="text" name="solarcashorchek" id="solarcashorchek"/>
+				       </c:when>
+				       <c:when test="${purchase.prodName == 'Capital Water Purifier'}">
+				       		  <input type="text" name="waterdateofpayment" id="waterdateofpayment"/>
+							  <input type="text" name="wateramount" id="wateramount"/>
+							  <input type="text" name="watercashorchek" id="watercashorchek"/>
+				       </c:when>
+				       <c:when test="${purchase.prodName == 'Capital LED Light'}">
+				       		<input type="text" name="leddateofpayment" id="leddateofpayment"/>
+							  <input type="text" name="ledamount" id="ledamount"/>
+							  <input type="text" name="ledcashorchek" id="ledcashorchek"/>
+				       </c:when>
+				       <c:when test="${purchase.prodName == 'Capital UPS'}">
+				       		<input type="text" name="upsdateofpayment" id="upsdateofpayment"/>
+						   <input type="text" name="upsamount" id="upsamount"/>
+						   <input type="text" name="upscashorchek" id="upscashorchek"/>
+				       </c:when>
+				       <c:when test="${purchase.prodName == 'Gas Geyser'}">
+				       		<input type="text" name="lightdateofpayment" id="lightdateofpayment"/>
+						  	<input type="text" name="lightamount" id="lightamount"/>
+						 	<input type="text" name="lightcashorchek" id="lightcashorchek"/>
+				       </c:when>
+				  </c:choose>
+				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
+				 <c:forEach var="payment" items="${purchase.payments}">
+				  	<div style="width: 190px ;float : left" >${ payment.dateofPayment }</div>
+			  		<div style="width: 200px ;float : left" >${ payment.amount }</div>
+			  		<div style="width: 200px ;float : left" >${ payment.cashorcheck }</div>
+				  </c:forEach> 
+				  
+				  
+			</div> 
 	   </tr>
-	   
-	</c:forEach>
 	   </table>
+	</c:forEach>
+	   
 	   <br><br>
-	   <tr><td><button type="submit">Submit</button></td><td><button type="reset">Reset</button></td><button type="button" onclick="javascript:document.location.href = 'home';">Back</button></tr>
+	   <table>
+	   	<tr><td><button type="submit">Submit</button></td><td><button type="reset">Reset</button></td><td><button type="button" onclick="javascript:document.location.href = 'home';">Back</button></td></tr>
+	   </table>
 	</div>
 	
 	</form>

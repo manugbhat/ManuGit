@@ -16,7 +16,7 @@
 	<script src="resources/jquery-ui-1.10.1.custom.js"></script>
 	<script type="text/javascript">
 	$(function(){
-		$('#dateofpayment').datepicker({dateFormat : "dd/mm/yy"});
+		$('#dateofpayment').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
 	});
 		
 	</script>

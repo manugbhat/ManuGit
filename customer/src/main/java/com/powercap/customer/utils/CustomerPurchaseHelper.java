@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 
 import com.powercap.customer.service.CustomerPurchase;
+import com.powercap.customer.service.PurchasePayment;
 
 public class CustomerPurchaseHelper {
 	
@@ -51,11 +52,11 @@ public class CustomerPurchaseHelper {
 			purchases.add(purchase);
 			
 		}
-		/*if(request.getParameter("solarlightprod") != null && request.getParameter("solarlightprod").toString().equals("on"))
+		if(request.getParameter("solarlightprod") != null && request.getParameter("solarlightprod").toString().equals("on"))
 		{
 			purchase = prepareSolarLightPurchase(request);
 			
-		}*/
+		}
 		return purchases;
 		
 	}
@@ -99,6 +100,26 @@ public class CustomerPurchaseHelper {
 	   purchase.setFinaltotal(request.getParameter("finaltotal")!=null?Double.parseDouble(request.getParameter("finaltotal")):0d);
 	   purchase.setFinalbalance(request.getParameter("finalbalance")!=null?Double.parseDouble(request.getParameter("finalbalance")):0d);
 	   
+	   List<PurchasePayment> payments = new ArrayList<PurchasePayment>();
+	   int i = 1;
+	   while(true){
+		   
+		   PurchasePayment payment = new PurchasePayment();
+		   if(request.getParameter("lightdateofpayment"+i) == null && 
+				   request.getParameter("lightamount"+i) == null &&
+				   request.getParameter("lightcashorchek"+i) == null  )
+		   {
+			   break;
+		   }
+			payment.setDateofPayment(request.getParameter("lightdateofpayment"+i));
+			payment.setAmount(Double.parseDouble(request.getParameter("lightamount"+i)));
+			payment.setCashorcheck(request.getParameter("lightcashorchek"+i));
+			payments.add(payment);
+			i++;
+			
+	   }
+	   	
+		purchase.setPayments(payments);
 	   
 		return purchase;
 	}
@@ -141,6 +162,26 @@ public class CustomerPurchaseHelper {
 	   purchase.setFinaltotal(request.getParameter("capitalgasgeyserfinaltotal")!=null?Double.parseDouble(request.getParameter("capitalgasgeyserfinaltotal")):0d);
 	   purchase.setFinalbalance(request.getParameter("capitalgasgeyserfinalbalance")!=null?Double.parseDouble(request.getParameter("capitalgasgeyserfinalbalance")):0d);
 	   
+	   List<PurchasePayment> payments = new ArrayList<PurchasePayment>();
+	   int i = 1;
+	   while(true){
+		   
+		   PurchasePayment payment = new PurchasePayment();
+		   if(request.getParameter("geyserdateofpayment"+i) == null && 
+				   request.getParameter("geyseramount"+i) == null &&
+				   request.getParameter("geysercashorchek"+i) == null  )
+		   {
+			   break;
+		   }
+			payment.setDateofPayment(request.getParameter("geyserdateofpayment"+i));
+			payment.setAmount(Double.parseDouble(request.getParameter("geyseramount"+i)));
+			payment.setCashorcheck(request.getParameter("geysercashorchek"+i));
+			payments.add(payment);
+			i++;
+			
+	   }
+	   	
+		purchase.setPayments(payments);
 	   
 		return purchase;
 	}
@@ -185,6 +226,26 @@ public class CustomerPurchaseHelper {
 	   purchase.setFinaltotal(request.getParameter("capitalupsfinaltotal")!=null?Double.parseDouble(request.getParameter("capitalupsfinaltotal")):0d);
 	   purchase.setFinalbalance(request.getParameter("capitalupsfinalbalance")!=null?Double.parseDouble(request.getParameter("capitalupsfinalbalance")):0d);
 	   
+	   List<PurchasePayment> payments = new ArrayList<PurchasePayment>();
+	   int i = 1;
+	   while(true){
+		   
+		   PurchasePayment payment = new PurchasePayment();
+		   if(request.getParameter("upsdateofpayment"+i) == null && 
+				   request.getParameter("upsamount"+i) == null &&
+				   request.getParameter("upscashorchek"+i) == null  )
+		   {
+			   break;
+		   }
+			payment.setDateofPayment(request.getParameter("upsdateofpayment"+i));
+			payment.setAmount(Double.parseDouble(request.getParameter("upsamount"+i)));
+			payment.setCashorcheck(request.getParameter("upscashorchek"+i));
+			payments.add(payment);
+			i++;
+			
+	   }
+	   	
+		purchase.setPayments(payments);
 	   
 		return purchase;
 	}
@@ -228,6 +289,27 @@ public class CustomerPurchaseHelper {
 	   purchase.setFinaldiscount((request.getParameter("capitalledfinaldiscount")!=null && !request.getParameter("capitalledfinaldiscount").equals(""))?Double.parseDouble(request.getParameter("capitalledfinaldiscount")):0d);
 	   purchase.setFinaltotal(request.getParameter("capitalledfinaltotal")!=null?Double.parseDouble(request.getParameter("capitalledfinaltotal")):0d);
 	   purchase.setFinalbalance(request.getParameter("capitalledfinalbalance")!=null?Double.parseDouble(request.getParameter("capitalledfinalbalance")):0d);
+	   
+	   List<PurchasePayment> payments = new ArrayList<PurchasePayment>();
+	   int i = 1;
+	   while(true){
+		   
+		   PurchasePayment payment = new PurchasePayment();
+		   if(request.getParameter("leddateofpayment"+i) == null && 
+				   request.getParameter("ledamount"+i) == null &&
+				   request.getParameter("ledcashorchek"+i) == null  )
+		   {
+			   break;
+		   }
+			payment.setDateofPayment(request.getParameter("leddateofpayment"+i));
+			payment.setAmount(Double.parseDouble(request.getParameter("ledamount"+i)));
+			payment.setCashorcheck(request.getParameter("ledcashorchek"+i));
+			payments.add(payment);
+			i++;
+			
+	   }
+	   	
+		purchase.setPayments(payments);
 	   
 	   
 		return purchase;
@@ -300,6 +382,26 @@ public class CustomerPurchaseHelper {
 	   purchase.setFinaltotal(request.getParameter("waterpurfinaltotal")!=null?Double.parseDouble(request.getParameter("waterpurfinaltotal")):0d);
 	   purchase.setFinalbalance(request.getParameter("waterpurfinalbalance")!=null?Double.parseDouble(request.getParameter("waterpurfinalbalance")):0d);
 	   
+	   List<PurchasePayment> payments = new ArrayList<PurchasePayment>();
+	   int i = 1;
+	   while(true){
+		   
+		   PurchasePayment payment = new PurchasePayment();
+		   if(request.getParameter("waterdateofpayment"+i) == null && 
+				   request.getParameter("wateramount"+i) == null &&
+				   request.getParameter("watercashorchek"+i) == null  )
+		   {
+			   break;
+		   }
+			payment.setDateofPayment(request.getParameter("waterdateofpayment"+i));
+			payment.setAmount(Double.parseDouble(request.getParameter("wateramount"+i)));
+			payment.setCashorcheck(request.getParameter("watercashorchek"+i));
+			payments.add(payment);
+			i++;
+			
+	   }
+	   	
+		purchase.setPayments(payments);
 	   
 		return purchase;
 	}
@@ -346,7 +448,27 @@ public class CustomerPurchaseHelper {
 	   purchase.setFinaltotal(request.getParameter("solarfinaltotal")!=null?Double.parseDouble(request.getParameter("solarfinaltotal")):0d);
 	   purchase.setFinalbalance(request.getParameter("solarfinalbalance")!=null?Double.parseDouble(request.getParameter("solarfinalbalance")):0d);
 	   
-	   
+	   System.out.println(request.getParameter("solardateofpayment1"));
+	   List<PurchasePayment> payments = new ArrayList<PurchasePayment>();
+	   int i = 1;
+	   while(true){
+		   
+		   PurchasePayment payment = new PurchasePayment();
+		   if(request.getParameter("solardateofpayment"+i) == null && 
+				   request.getParameter("solaramount"+i) == null &&
+				   request.getParameter("solarcashorchek"+i) == null  )
+		   {
+			   break;
+		   }
+			payment.setDateofPayment(request.getParameter("solardateofpayment"+i));
+			payment.setAmount(Double.parseDouble(request.getParameter("solaramount"+i)));
+			payment.setCashorcheck(request.getParameter("solarcashorchek"+i));
+			payments.add(payment);
+			i++;
+			
+	   }
+	   	
+		purchase.setPayments(payments);
 		return purchase;
 	}
 

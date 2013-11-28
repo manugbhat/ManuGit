@@ -15,12 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.powercap.customer.exceptions.NoDBException;
 import com.powercap.customer.service.CustomerPurchase;
 import com.powercap.customer.service.CustomerPurchaseService;
@@ -59,11 +59,14 @@ public class HomeController {
 			
 			List dueCustomers = paymentService.getPaymentReminders();
 			List dueServices = custService.getDueCustomers();
+			Integer customerCount = custService.getCustomersCount();
 			Map duemap = new HashMap();
-			duemap.put("duepayments", dueCustomers);
+			//duemap.put("duepayments", dueCustomers);
 			duemap.put("dueservices", dueServices);
-			
-				return new ModelAndView("home","dues",duemap);
+			ModelAndView homeView = new ModelAndView("home","dues",duemap);
+			homeView.addObject("duepayments", dueCustomers);
+			homeView.addObject("customerCount", customerCount);
+				return homeView;
 		}
 		else return new ModelAndView("login");
 	}
@@ -84,10 +87,14 @@ public class HomeController {
 			{
 				List dueCustomers = paymentService.getPaymentReminders();
 				List dueServices = custService.getDueCustomers();
+				Integer customerCount = custService.getCustomersCount();
 				Map duemap = new HashMap();
-				duemap.put("duepayments", dueCustomers);
+				//duemap.put("duepayments", dueCustomers);
 				duemap.put("dueservices", dueServices);
-				return new ModelAndView("home","dues",duemap);
+				ModelAndView homeView = new ModelAndView("home","dues",duemap);
+				homeView.addObject("duepayments", dueCustomers);
+				homeView.addObject("customerCount", customerCount);
+					return homeView;
 			}
 			else
 			{
@@ -128,7 +135,7 @@ public class HomeController {
 	{
 		//CustomerPurchaseService purchaseService = new CustomerPurchaseService();
 		List<CustomerPurchase> purchases = preparePurchase(request);
-		if(purchases!=null && purchases.size() > 0 )
+		if(purchases!=null && !purchases.isEmpty() )
 			{
 				purchaseService.createCustomerPurchase(purchases);
 			}
@@ -150,9 +157,13 @@ public class HomeController {
 	public ModelAndView editCustomer(@RequestParam String customerId) throws IOException, SQLException, java.text.ParseException{
 		System.out.println("Details for customer Id " + customerId);
 		List <CustomerPurchase>purchases = purchaseService.getCustomerPurchases(customerId);
+		if(!StringUtils.isNumeric(customerId)) {
+			return new ModelAndView("customerpick","customerpurchases",purchases);
+		}
 		return new ModelAndView("customeredit","customerpurchases",purchases);
 	}
 	
+		
 	@RequestMapping(value="/updatepayment")
 	
 	public ModelAndView updatePayment(@RequestParam int purchaseId) throws NumberFormatException, SQLException {
@@ -185,6 +196,7 @@ public class HomeController {
 	@RequestMapping(value="/updateservice")
 	
 	public ModelAndView updateService(@RequestParam String customerId) throws NumberFormatException, SQLException {
+		
 		List<CustomerService> services = custService.getCustomerServices(customerId);
 		if(services.size()==0)
 		{
@@ -195,7 +207,7 @@ public class HomeController {
 		return new ModelAndView("updateServices","services",services);
 	}
 	
-@RequestMapping(value="/updateservices")
+	@RequestMapping(value="/updateservices")
 	
 	public String updateServices(HttpServletRequest request) throws SQLException, java.text.ParseException {
 		System.out.println("updating services");
@@ -205,6 +217,7 @@ public class HomeController {
 		service.setServiceName(request.getParameter("servicename"));
 		service.setDateofService(request.getParameter("servicedate"));
 		service.setServiceCharge(Double.parseDouble(request.getParameter("servicecharge")));
+		service.setDueinmonths(Integer.parseInt(request.getParameter("dueinmonths")));
 		service.setDateofNextService(request.getParameter("nextservicedate"));
 		custService.createCustomerService(service);
 		return "redirect:/updateservice?customerId="+service.getCustomerId()+"";

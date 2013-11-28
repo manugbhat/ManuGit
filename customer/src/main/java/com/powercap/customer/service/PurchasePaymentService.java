@@ -94,17 +94,20 @@ public class PurchasePaymentService {
 		
 	}
 	
-	public List getPaymentReminders() throws SQLException
+	public List<CustomerPurchase> getPaymentReminders() throws SQLException
 	{
-		String duePaySql="select cust.customerid from customer cust,purchases pch,payments pay where " +
+		String duePaySql="select cust.customerid,cust.name from customer cust,purchases pch,payments pay where " +
 						 "cust.customerid=pch.customerid and pch.purchaseid = pay.purchaseid and current_date <= pay.datenextpay";
 		Connection conn = DBConnector.getConnection();
 		PreparedStatement stmt = conn.prepareStatement(duePaySql);
-		List duecustomers = new ArrayList();
+		List<CustomerPurchase> duecustomers = new ArrayList<CustomerPurchase>();
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next())
 		{
-			duecustomers.add(rs.getInt(1));
+			CustomerPurchase customer = new CustomerPurchase();
+			customer.setCustomerId(rs.getInt(1));
+			customer.setCustomerName(rs.getString(2));
+			duecustomers.add(customer);
 		}
 		conn.close();
 		return duecustomers;

@@ -6,6 +6,7 @@ public class CustomerService {
 	private String serviceDescription;
 	private String dateofService;
 	private double serviceCharge;
+	private Integer dueinmonths;
 	private String dateofNextService;
 	private int customerId;
 	
@@ -44,6 +45,12 @@ public class CustomerService {
 	}
 	public void setDateofNextService(String dateofNextService) {
 		this.dateofNextService = dateofNextService;
+	}
+	public Integer getDueinmonths() {
+		return dueinmonths;
+	}
+	public void setDueinmonths(Integer dueinmonths) {
+		this.dueinmonths = dueinmonths;
 	}
 	
 	

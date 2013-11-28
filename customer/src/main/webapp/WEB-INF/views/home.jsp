@@ -47,6 +47,13 @@ function checkEmpty(){
 	
 	
 }
+
+function openServiceDetails()
+{
+	//var customerid = $('#customerId').text();
+	window.open('updateservice?customerId='+0 , 'Service Update','height=1500,width=400,resizable=true');
+	return false;
+}
 </script>
 </head>
 <body>
@@ -68,7 +75,7 @@ function checkEmpty(){
 			
 		</div>
 	</div>
-
+	<h4 align="center">Total Number Of Customers In The System - ${customerCount}</h4>
 	<div id="search">
 		<form action="customeredit" onsubmit="return checkEmpty()" method="POST">
 			Enter customer ID <input type="text" name="customerId" id="customerId"></input> &nbsp;	<button type="submit" >Find</button>
@@ -79,21 +86,22 @@ function checkEmpty(){
 		<form action="customercreate">
 	    	<button type="submit" >Create Customer</button>
 		</form>
-		
+		<!-- <strong>----OR-----</strong>
+		<br>
+		<button id="updateservice" name="Enter Service details" onclick="return openServiceDetails()">Enter Service details</button>
+		 -->
 	</div>
 	
 	<div id="three-column" class="container">
+		
 		<div class="tbox1">
 			<div class="box-style box-style01">
 				<div class="content">
 					<h2>Payment Due Reminders</h2>
 					<ul id="scroller">
-						<c:forEach var="customer" items="${dues}">
-						    <c:if test="${customer.key == 'duepayments'}">
-							<c:forEach var="custid" items="${customer.value}">
-								<li>${custid}</li>
-							</c:forEach>
-							</c:if>
+						<c:forEach var="customer" items="${duepayments}">
+								<li><a href="customeredit?customerId=${customer.customerId}">${customer.customerName}</a></li>
+								<!--li>${custid}</li-->
 													
 						</c:forEach>
 						<!-- <li><a href="customercreate">Customer 1 Name </a></li>

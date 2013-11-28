@@ -13,14 +13,76 @@
 	<script src="resources/jquery-ui-1.10.1.custom.js"></script>
 	<script type="text/javascript">
 	$(function(){
-
-		$('#dateoforder').datepicker({dateFormat : "dd/mm/yy"});
-		$('#dateofsupply').datepicker({dateFormat : "dd/mm/yy"});
-		$('#dateofinstallation').datepicker({dateFormat : "dd/mm/yy"});
-		
+		GLOBAL = { "solarcapacity" : { nameCount : 0 },
+				   "capitalwater" : { nameCount : 0 },
+				   "capitalled" : { nameCount : 0 },
+				   "capitalups" : { nameCount : 0 },
+				   "gasgeyser" : { nameCount : 0 },
+				   "solarlight" : { nameCount : 0 },
+				   };
+		$('#dateoforder').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
+		$('#dateofsupply').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
+		$('#dateofinstallation').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
+		$('[id$=dateofpayment]').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
 		/* $("[id$=finalbalance]").click(function(){
 			window.open('updatepayment','Payment update','height=200,width=400');
 		}); */
+		$("[id$=estbalance]").on({
+			click : function(e){
+							//$(this).parent().parent().parent().parent().prev().show();
+							$(this).parents().eq(3).prev().show();
+						},
+			
+			});
+		$(".advpmtsave").click(function(){
+			  parentid = $(this).parent().attr('id');
+			  nameCount = 0;
+			  $.each(GLOBAL,function(val,ind){
+				  if(val == parentid) {
+					  nameCount = ind.nameCount;
+				  }
+			  });
+			  dop = $(this).prev().prev().prev().val();
+			  amt = $(this).prev().prev().val();
+			  cc = $(this).prev().val();
+			  
+			  dopid = $(this).prev().prev().prev().attr('id');
+			  amtid = $(this).prev().prev().attr('id');
+			  ccid = $(this).prev().attr('id');
+			  
+			  nameCount += 1;
+			  dateOfPaymentName = dopid+nameCount;
+			  amountName = amtid+nameCount;
+			  cashorchekName = ccid+nameCount;
+			  
+			  $.each(GLOBAL,function(val,ind){
+				  if(val == parentid) {
+					  ind.nameCount = nameCount;
+				  }
+			  });
+			  
+			  formhtml = '<input type="hidden" name="'+dateOfPaymentName+'" value="'+dop+'"/>'+
+				  		 '<input type="hidden" name="'+amountName+'" value="'+amt+'"/>'+
+				  		 '<input type="hidden" name="'+cashorchekName+'" value="'+cc+'"/>';
+			  html = '<div style="width: 190px ;float : left" >'+dop+'</div>'+
+			  		 '<div style="width: 200px ;float : left" >'+amt+'</div>'+
+			  		 '<div style="width: 200px ;float : left" >'+cc+'</div>';
+			  $(this).parent().append(html);
+			  $(this).parent().append(formhtml);
+			  finalbalance = $(this).parent().next().find('[id$=estbalance]').val();
+			  if(finalbalance != "")
+				  {
+				   finalbalance -= amt;
+				   finalbalance = (Math.round(finalbalance*100)/100);
+				  }
+			  
+			  $(this).parent().next().find('[id$=estbalance]').val(finalbalance);
+			 
+		});
+		
+		$(".advpmtclose").click(function(){
+			$(this).parent().hide();
+		});
 	});
 	
 	function checkProdSelection()
@@ -141,7 +203,7 @@
 		   <td><select name="solarcapacitywarranty" id="solarcapacitywarranty">
 		   		<option selected="selected">Choose one..</option>
 		   		<option>1</option>
-		   		<option>2</option>
+		   		<option>2</option> 
 		   		<option>3</option>
 		   		<option>4</option>
 		   		<option>5</option>
@@ -169,11 +231,21 @@
 		   
 	   </tr>
 	   <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
+	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
 	   <tr><td><input type="text" name="solarestunitrate" id="solarestunitrate"/></td><td><input type="text" name="solarestquantity" id="solarestquantity"/></td><td><input type="text" name="solarestvat" id="solarestvat"/></td><td><input type="text" name="solarestdiscount" id="solarestdiscount" onblur="calculateTotalBalance('solarestunitrate','solarestquantity','solarestvat','solarestdiscount','solaresttotal','solarestbalance')"/></td><td><input type="text" name="solaresttotal" id="solaresttotal"/></td><td><input type="text" name="solarestbalance" id="solarestbalance"/></td></tr>
 	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
 	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-	   <tr><td><input type="text" name="solarfinalunitrate" id="solarfinalunitrate"/></td><td><input type="text" name="solarfinalquantity" id="solarfinalquantity"/></td><td><input type="text" name="solarfinalvat" id="solarfinalvat"/></td><td><input type="text" name="solarfinaldiscount" id="solarfinaldiscount" onblur="calculateTotalBalance('solarfinalunitrate','solarfinalquantity','solarfinalvat','solarfinaldiscount','solarfinaltotal','solarfinalbalance')"/></td><td><input type="text" name="solarfinaltotal" id="solarfinaltotal"/></td><td><input type="text" name="solarfinalbalance" id="solarfinalbalance"/></td></tr>
+	   <tr><td><input type="text" name="solarfinalunitrate" id="solarfinalunitrate"/></td><td><input type="text" name="solarfinalquantity" id="solarfinalquantity"/></td><td><input type="text" name="solarfinalvat" id="solarfinalvat"/></td><td><input type="text" name="solarfinaldiscount" id="solarfinaldiscount" onblur="calculateTotalBalance('solarfinalunitrate','solarfinalquantity','solarfinalvat','solarfinaldiscount','solarfinaltotal','solarfinalbalance')"/></td><td><input type="text" name="solarfinaltotal" id="solarfinaltotal"/></td><td><input type="text" name="solarfinalbalance" id="solarfinalbalance"/></td>
+	  	<div name="advancepaymentsolar" id="advancepaymentsolar" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
+			
+				  <h4>Update advance payments</h4>
+				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
+				  <input type="text" name="solardateofpayment" id="solardateofpayment"/>
+				  <input type="text" name="solaramount" id="solaramount"/>
+				  <input type="text" name="solarcashorchek" id="solarcashorchek"/>
+				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
+		</div>
+		</tr>	   
 	   </table>
 	   </br>
 	   <table class="capitalwater">
@@ -225,17 +297,27 @@
 		   </td>
 		   </tr>
 	   <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
+	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
 	   <tr><td><input type="text" name="waterpurestunitrate" id="waterpurestunitrate"/></td><td><input type="text" name="waterpurestquantity" id="waterpurestquantity"/></td><td><input type="text" name="waterpurestvat" id="waterpurestvat"/></td><td><input type="text" name="waterpurestdiscount" id="waterpurestdiscount" onblur="calculateTotalBalance('waterpurestunitrate','waterpurestquantity','waterpurestvat','waterpurestdiscount','waterpuresttotal','waterpurestbalance')"/></td><td><input type="text" name="waterpuresttotal" id="waterpuresttotal"/></td><td><input type="text" name="waterpurestbalance" id="waterpurestbalance"/></td></tr>
 	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
 	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-	   <tr><td><input type="text" name="waterpurfinalunitrate" id="waterpurfinalunitrate"/></td><td><input type="text" name="waterpurfinalquantity" id="waterpurfinalquantity"/></td><td><input type="text" name="waterpurfinalvat" id="waterpurfinalvat"/></td><td><input type="text" name="waterpurfinaldiscount" id="waterpurfinaldiscount" onblur="calculateTotalBalance('waterpurfinalunitrate','waterpurfinalquantity','waterpurfinalvat','waterpurfinaldiscount','waterpurfinaltotal','waterpurfinalbalance')"/></td><td><input type="text" name="waterpurfinaltotal" id="waterpurfinaltotal"/></td><td><input type="text" name="waterpurfinalbalance" id="waterpurfinalbalance"/></td></tr>
+	   <tr><td><input type="text" name="waterpurfinalunitrate" id="waterpurfinalunitrate"/></td><td><input type="text" name="waterpurfinalquantity" id="waterpurfinalquantity"/></td><td><input type="text" name="waterpurfinalvat" id="waterpurfinalvat"/></td><td><input type="text" name="waterpurfinaldiscount" id="waterpurfinaldiscount" onblur="calculateTotalBalance('waterpurfinalunitrate','waterpurfinalquantity','waterpurfinalvat','waterpurfinaldiscount','waterpurfinaltotal','waterpurfinalbalance')"/></td><td><input type="text" name="waterpurfinaltotal" id="waterpurfinaltotal"/></td><td><input type="text" name="waterpurfinalbalance" id="waterpurfinalbalance"/></td>
+	   <div name="advancepaymentwater" id="advancepaymentwater" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
+			
+				  <h4>Update advance payments</h4>
+				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
+				  <input type="text" name="waterdateofpayment" id="waterdateofpayment"/>
+				  <input type="text" name="wateramount" id="wateramount"/>
+				  <input type="text" name="watercashorchek" id="watercashorchek"/>
+				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
+		</div>
+	   </tr>
 		</table>
 		</br>
 		<table class="capitalled"> 
 	   <tr><td><input type="checkbox" name="capitledlightpprod" id="capitledlightpprod">Capital LED Light</td><td>Quantity</td><td>Model</td><td>Warranty</td><td>Free Service</td></tr>
 	   <tr>
-		   <td><select multiple name="capitalled" id="capitalled">
+		   <td><select multiple name="capitalled" id="capitalled" style="height : 250px">
 		   		<option>3W</option>
 		   		<option>6W</option>
 		   		<option>9W</option>
@@ -251,6 +333,18 @@
 		   	   </select>
 		   	   </td>
 		   	   <td>
+		   	    	<input type="text" id="ledquant3W" name="ledquant3W" style="width : 40px;"/><br/>
+		   	    	<input type="text" id="ledquant6W" name="ledquant6W" style="width : 40px;"/><br/>
+		   	    	<input type="text" id="ledquant9W" name="ledquant9W" style="width : 40px;"/><br/>
+		   	    	<input type="text" id="ledquant12W" name="ledquant12W" style="width : 40px;"/><br/>
+		   	    	<input type="text" id="ledquant15W" name="ledquant15W" style="width : 40px;"/><br/>
+		   	    	<input type="text" id="ledquant18W" name="ledquant18W" style="width : 40px;"/><br/>
+		   	    	<input type="text" id="ledquant21W" name="ledquant21W" style="width : 40px;"/><br/>
+		   	    	<input type="text" id="ledquant24W" name="ledquant24W" style="width : 40px;"/><br/>
+		   	    	<input type="text" id="ledquant27W" name="ledquant27W" style="width : 40px;"/><br/>
+		   	    	<input type="text" id="ledquant30W" name="ledquant30W" style="width : 40px;"/><br/>
+		   	    	<input type="text" id="ledquant36W" name="ledquant36W" style="width : 40px;"/><br/>
+		   	    	<input type="text" id="ledquant45W" name="ledquant45W" style="width : 40px;"/><br/>
 		   	    		
 			   </td>
 		  
@@ -265,7 +359,7 @@
 		  				}		
 		  			);
 		  			
-					$('#capitalled').change(
+					/*$('#capitalled').change(
 						function(){
 							that = this;
 							var selectedvals = $(this).val();
@@ -302,8 +396,8 @@
 								
 							});
 						}		
-					);
-					$('body').on('keyup','[id^=ledquant]',function(){
+					);*/
+					$('[id^=ledquant]').on('keyup',function(){
 						var all = $('[id^=ledquant]');
 						var total = 0;
 						for(var i=0 ; i < all.length ; i++) {
@@ -356,11 +450,21 @@
 		   </td>
 		   </tr>
 	   <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
+	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
 	   <tr><td><input type="text" name="capitalledestunitrate" id="capitalledestunitrate"/></td><td><input type="text" name="capitalledestquantity" id="capitalledestquantity"/></td><td><input type="text" name="capitalledestvat" id="capitalledestvat"/></td><td><input type="text" name="capitalledestdiscount" id="capitalledestdiscount" onblur="calculateTotalBalance('capitalledestunitrate','capitalledestquantity','capitalledestvat','capitalledestdiscount','capitalledesttotal','capitalledestbalance')"/></td><td><input type="text" name="capitalledesttotal" id="capitalledesttotal"/></td><td><input type="text" name="capitalledestbalance" id="capitalledestbalance"/></td></tr>
 	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
 	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-	   <tr><td><input type="text" name="capitalledfinalunitrate" id="capitalledfinalunitrate"/></td><td><input type="text" name="capitalledfinalquantity" id="capitalledfinalquantity"/></td><td><input type="text" name="capitalledfinalvat" id="capitalledfinalvat"/></td><td><input type="text" name="capitalledfinaldiscount" id="capitalledfinaldiscount" onblur="calculateTotalBalance('capitalledfinalunitrate','capitalledfinalquantity','capitalledfinalvat','capitalledfinaldiscount','capitalledfinaltotal','capitalledfinalbalance')"/></td><td><input type="text" name="capitalledfinaltotal" id="capitalledfinaltotal"/></td><td><input type="text" name="capitalledfinalbalance" id="capitalledfinalbalance"/></td></tr>
+	   <tr><td><input type="text" name="capitalledfinalunitrate" id="capitalledfinalunitrate"/></td><td><input type="text" name="capitalledfinalquantity" id="capitalledfinalquantity"/></td><td><input type="text" name="capitalledfinalvat" id="capitalledfinalvat"/></td><td><input type="text" name="capitalledfinaldiscount" id="capitalledfinaldiscount" onblur="calculateTotalBalance('capitalledfinalunitrate','capitalledfinalquantity','capitalledfinalvat','capitalledfinaldiscount','capitalledfinaltotal','capitalledfinalbalance')"/></td><td><input type="text" name="capitalledfinaltotal" id="capitalledfinaltotal"/></td><td><input type="text" name="capitalledfinalbalance" id="capitalledfinalbalance"/></td>
+	   <div name="advancepaymentled" id="advancepaymentled" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
+			
+				  <h4>Update advance payments</h4>
+				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
+				  <input type="text" name="leddateofpayment" id="leddateofpayment"/>
+				  <input type="text" name="ledamount" id="ledamount"/>
+				  <input type="text" name="ledcashorchek" id="ledcashorchek"/>
+				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
+		</div>
+	   </tr>
 	   </table>
 	   </br>
 	   <table class="capitalups">
@@ -438,11 +542,21 @@
 		   </td>
 		   </tr>
 		   <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-		   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
+		   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
 		   <tr><td><input type="text" name="capitalupsestunitrate" id="capitalupsestunitrate"/></td><td><input type="text" name="capitalupsestquantity" id="capitalupsstquantity"/></td><td><input type="text" name="capitalupsestvat" id="capitalupsestvat"/></td><td><input type="text" name="capitalupsestdiscount" id="capitalupsestdiscount" onblur="calculateTotalBalance('capitalupsestunitrate','capitalupsestquantity','capitalupsestvat','capitalupsestdiscount','capitalupsesttotal','capitalupsestbalance')"/></td><td><input type="text" name="capitalupsesttotal" id="capitalupsesttotal"/></td><td><input type="text" name="capitalupsestbalance" id="capitalupsestbalance"/></td></tr>
 		   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
 		   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-		   <tr><td><input type="text" name="capitalupsfinalunitrate" id="capitalupsfinalunitrate"/></td><td><input type="text" name="capitalupsfinalquantity" id="capitalupsfinalquantity"/></td><td><input type="text" name="capitalupsfinalvat" id="capitalupsfinalvat"/></td><td><input type="text" name="capitalupsfinaldiscount" id="capitalupsfinaldiscount" onblur="calculateTotalBalance('capitalupsfinalunitrate','capitalupsfinalquantity','capitalupsfinalvat','capitalupsfinaldiscount','capitalupsfinaltotal','capitalupsfinalbalance')"/></td><td><input type="text" name="capitalupsfinaltotal" id="capitalupsfinaltotal"/></td><td><input type="text" name="capitalupsfinalbalance" id="capitalupsfinalbalance"/></td></tr>
+		   <tr><td><input type="text" name="capitalupsfinalunitrate" id="capitalupsfinalunitrate"/></td><td><input type="text" name="capitalupsfinalquantity" id="capitalupsfinalquantity"/></td><td><input type="text" name="capitalupsfinalvat" id="capitalupsfinalvat"/></td><td><input type="text" name="capitalupsfinaldiscount" id="capitalupsfinaldiscount" onblur="calculateTotalBalance('capitalupsfinalunitrate','capitalupsfinalquantity','capitalupsfinalvat','capitalupsfinaldiscount','capitalupsfinaltotal','capitalupsfinalbalance')"/></td><td><input type="text" name="capitalupsfinaltotal" id="capitalupsfinaltotal"/></td><td><input type="text" name="capitalupsfinalbalance" id="capitalupsfinalbalance"/></td>
+		   <div name="advancepaymentups" id="advancepaymentups" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
+			
+				  <h4>Update advance payments</h4>
+				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
+				  <input type="text" name="upsdateofpayment" id="upsdateofpayment"/>
+				  <input type="text" name="upsamount" id="upsamount"/>
+				  <input type="text" name="upscashorchek" id="upscashorchek"/>
+				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
+			</div>
+		   </tr>
 		</table>
 	   </br>
 	   <table class="gasgeyser">
@@ -485,11 +599,21 @@
 		   </td>
 	   </tr>
 	    <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
+	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
 	   <tr><td><input type="text" name="capitalgasgeyserestunitrate" id="capitalgasgeyserestunitrate"/></td><td><input type="text" name="capitalgasgeyserestquantity" id="capitalgasgeyserstquantity"/></td><td><input type="text" name="capitalgasgeyserestvat" id="capitalgasgeyserestvat"/></td><td><input type="text" name="capitalgasgeyserestdiscount" id="capitalgasgeyserestdiscount" onblur="calculateTotalBalance('capitalgasgeyserestunitrate','capitalgasgeyserestquantity','capitalgasgeyserestvat','capitalgasgeyserestdiscount','capitalgasgeyseresttotal','capitalgasgeyserestbalance')"/></td><td><input type="text" name="capitalgasgeyseresttotal" id="capitalgasgeyseresttotal"/></td><td><input type="text" name="capitalgasgeyserestbalance" id="capitalgasgeyserestbalance"/></td></tr>
 	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
 	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-	   <tr><td><input type="text" name="capitalgasgeyserfinalunitrate" id="capitalgasgeyserfinalunitrate"/></td><td><input type="text" name="capitalgasgeyserfinalquantity" id="capitalgasgeyserfinalquantity"/></td><td><input type="text" name="capitalgasgeyserfinalvat" id="capitalgasgeyserfinalvat"/></td><td><input type="text" name="capitalgasgeyserfinaldiscount" id="capitalgasgeyserfinaldiscount" onblur="calculateTotalBalance('capitalgasgeyserfinalunitrate','capitalgasgeyserfinalquantity','capitalgasgeyserfinalvat','capitalgasgeyserfinaldiscount','capitalgasgeyserfinaltotal','capitalgasgeyserfinalbalance')"/></td><td><input type="text" name="capitalgasgeyserfinaltotal" id="capitalgasgeyserfinaltotal"/></td><td><input type="text" name="capitalgasgeyserfinalbalance" id="capitalgasgeyserfinalbalance"/></td></tr>
+	   <tr><td><input type="text" name="capitalgasgeyserfinalunitrate" id="capitalgasgeyserfinalunitrate"/></td><td><input type="text" name="capitalgasgeyserfinalquantity" id="capitalgasgeyserfinalquantity"/></td><td><input type="text" name="capitalgasgeyserfinalvat" id="capitalgasgeyserfinalvat"/></td><td><input type="text" name="capitalgasgeyserfinaldiscount" id="capitalgasgeyserfinaldiscount" onblur="calculateTotalBalance('capitalgasgeyserfinalunitrate','capitalgasgeyserfinalquantity','capitalgasgeyserfinalvat','capitalgasgeyserfinaldiscount','capitalgasgeyserfinaltotal','capitalgasgeyserfinalbalance')"/></td><td><input type="text" name="capitalgasgeyserfinaltotal" id="capitalgasgeyserfinaltotal"/></td><td><input type="text" name="capitalgasgeyserfinalbalance" id="capitalgasgeyserfinalbalance"/></td>
+	   <div name="advancepaymentgeyser" id="advancepaymentgeyser" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
+			
+				  <h4>Update advance payments</h4>
+				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
+				  <input type="text" name="geyserdateofpayment" id="geyserdateofpayment"/>
+				  <input type="text" name="geyseramount" id="geyseramount"/>
+				  <input type="text" name="geysercashorchek" id="geysercashorchek"/>
+				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
+		</div>
+	   </tr>
 	   </table>
 	   </br>
 	   <table class="solarlight">
@@ -645,17 +769,28 @@
 		   </td>
 		   </tr>
 	   <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-	   <tr><td><input type="text" name="capitalsolarlightestunitrate" id="capitalsolarlightestunitrate"/></td><td><input type="text" name="capitalsolarlightestquantity" id="ecapitalsolarlightstquantity"/></td><td><input type="text" name="capitalsolarlightestvat" id="capitalsolarlightestvat"/></td><td><input type="text" name="capitalsolarlightestdiscount" id="capitalsolarlightestdiscount" onblur="calculateTotalBalance('capitalsolarlightestunitrate','capitalsolarlightestquantity','capitalsolarlightestvat','capitalsolarlightestdiscount','capitalsolarlightesttotal','capitalsolarlightestbalance')"/></td><td><input type="text" name="capitalsolarlightesttotal" id="capitalsolarlightesttotal"/></td><td><input type="text" name="capitalsolarlightestbalance" id="capitalsolarlightestbalance"/></td></tr>
+	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
+	   <tr><td><input type="text" name="capitalsolarlightestunitrate" id="capitalsolarlightestunitrate"/></td><td><input type="text" name="capitalsolarlightestquantity" id="capitalsolarlightestquantity"/></td><td><input type="text" name="capitalsolarlightestvat" id="capitalsolarlightestvat"/></td><td><input type="text" name="capitalsolarlightestdiscount" id="capitalsolarlightestdiscount" onblur="calculateTotalBalance('capitalsolarlightestunitrate','capitalsolarlightestquantity','capitalsolarlightestvat','capitalsolarlightestdiscount','capitalsolarlightesttotal','capitalsolarlightestbalance')"/></td><td><input type="text" name="capitalsolarlightesttotal" id="capitalsolarlightesttotal"/></td><td><input type="text" name="capitalsolarlightestbalance" id="capitalsolarlightestbalance"/></td></tr>
 	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
 	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-	   <tr><td><input type="text" name="capitalsolarlightfinalunitrate" id="capitalsolarlightfinalunitrate"/></td><td><input type="text" name="capitalsolarlightfinalquantity" id="capitalsolarlightfinalquantity"/></td><td><input type="text" name="capitalsolarlightfinalvat" id="capitalsolarlightfinalvat"/></td><td><input type="text" name="capitalsolarlightfinaldiscount" id="capitalsolarlightfinaldiscount" onblur="calculateTotalBalance('capitalsolarlightfinalunitrate','capitalsolarlightfinalquantity','capitalsolarlightfinalvat','capitalsolarlightfinaldiscount','capitalsolarlightfinaltotal','capitalsolarlightfinalbalance')"/></td><td><input type="text" name="capitalsolarlightfinaltotal" id="capitalsolarlightfinaltotal"/></td><td><input type="text" name="capitalsolarlightfinalbalance" id="capitalsolarlightfinalbalance"/></td></tr>
+	   <tr><td><input type="text" name="capitalsolarlightfinalunitrate" id="capitalsolarlightfinalunitrate"/></td><td><input type="text" name="capitalsolarlightfinalquantity" id="capitalsolarlightfinalquantity"/></td><td><input type="text" name="capitalsolarlightfinalvat" id="capitalsolarlightfinalvat"/></td><td><input type="text" name="capitalsolarlightfinaldiscount" id="capitalsolarlightfinaldiscount" onblur="calculateTotalBalance('capitalsolarlightfinalunitrate','capitalsolarlightfinalquantity','capitalsolarlightfinalvat','capitalsolarlightfinaldiscount','capitalsolarlightfinaltotal','capitalsolarlightfinalbalance')"/></td><td><input type="text" name="capitalsolarlightfinaltotal" id="capitalsolarlightfinaltotal"/></td><td><input type="text" name="capitalsolarlightfinalbalance" id="capitalsolarlightfinalbalance"/></td>
+	   <div name="advancepaymentlight" id="advancepaymentlight" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
+			
+				  <h4>Update advance payments</h4>
+				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
+				  <input type="text" name="lightdateofpayment" id="lightdateofpayment"/>
+				  <input type="text" name="lightamount" id="lightamount"/>
+				  <input type="text" name="lightcashorchek" id="lightcashorchek"/>
+				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
+		</div>
+	   </tr>
 	
 	   </table>
 	   <br><br>
 	   <table>
 	   <tr><td><button type="submit">Submit</button></td><td><button type="reset">Reset</button></td><td><button type="button" onclick="javascript:document.location.href = 'home';">Back</button></td></tr>
 	   </table>
+	   
 	   </form>
 	</div>
 	
