@@ -1,6 +1,6 @@
 package com.powercap.customer.service;
 
-import java.util.Date;
+import java.io.InputStream;
 import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -44,8 +44,9 @@ public class CustomerPurchase {
 	private double finaltotal;
 	private double estbalance;
 	private double finalbalance;
-	private MultipartFile photo;
+	private InputStream photo;
 	private List<PurchasePayment> payments;
+	
 	
 	
 	public List<PurchasePayment> getPayments() {
@@ -66,10 +67,10 @@ public class CustomerPurchase {
 	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
 	}
-	public MultipartFile getPhoto() {
+	public InputStream getPhoto() {
 		return photo;
 	}
-	public void setPhoto(MultipartFile photo) {
+	public void setPhoto(InputStream photo) {
 		this.photo = photo;
 	}
 	public String getDateofOrder() {

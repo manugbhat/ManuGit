@@ -1,6 +1,6 @@
 @CHARSET "ISO-8859-1";
 
- table {
+ /* table {
 	background-color: buttonface;
 	width: 1000px;
 	left: 35px;
@@ -12,7 +12,7 @@ td {
 	padding-right: 14px;
 	padding-top: 10px;
 	padding-bottom: 3px;
-}
+} */
 .ui-datepicker {
 	width: 17em !important;
 	padding: .2em .2em 0;
@@ -40,4 +40,15 @@ td {
 	padding: .2em;
 	text-align: right;
 	text-decoration: none;
+}
+.banner {
+	 background : none repeat scroll 0 0 #6F6F6F;
+	 font-weight :bold;
+	 border:2px solid #000000;
+	 color : #FFFFFF
+}
+.product {
+	 background : none repeat scroll 0 0 #6F6F6F; 
+	 color : #FFFFFF;
+	 font-weight : bold; 
 }

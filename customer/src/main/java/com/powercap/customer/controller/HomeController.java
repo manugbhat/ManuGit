@@ -2,8 +2,6 @@ package com.powercap.customer.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,15 +10,20 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.ParseException;
-import org.springframework.stereotype.Controller;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.powercap.customer.exceptions.NoDBException;
 import com.powercap.customer.service.CustomerPurchase;
 import com.powercap.customer.service.CustomerPurchaseService;
@@ -30,6 +33,7 @@ import com.powercap.customer.service.PurchasePayment;
 import com.powercap.customer.service.PurchasePaymentService;
 import com.powercap.customer.service.UserService;
 import com.powercap.customer.utils.CustomerPurchaseHelper;
+import com.powercap.model.UploadFile;
 
 @Controller
 public class HomeController {
@@ -131,10 +135,10 @@ public class HomeController {
 	
 	@RequestMapping(value="/createcustomerpurchase")
 	//public ModelAndView customerPurchase(@RequestParam(value = "customerphoto") CommonsMultipartFile photo,HttpServletRequest request) throws IOException, SQLException, java.text.ParseException
-	public String customerPurchase(HttpServletRequest request) throws IOException, SQLException, java.text.ParseException
+	public String customerPurchase(@ModelAttribute(value="uploadedFile")UploadFile file,HttpServletRequest request) throws IOException, SQLException, java.text.ParseException
 	{
 		//CustomerPurchaseService purchaseService = new CustomerPurchaseService();
-		List<CustomerPurchase> purchases = preparePurchase(request);
+		List<CustomerPurchase> purchases = preparePurchase(request,file);
 		if(purchases!=null && !purchases.isEmpty() )
 			{
 				purchaseService.createCustomerPurchase(purchases);
@@ -142,12 +146,12 @@ public class HomeController {
 		
 		return "redirect:/customeredit?customerId="+purchases.get(0).getCustomerId()+"";
 	}
-	private List<CustomerPurchase> preparePurchase(HttpServletRequest request) {
+	private List<CustomerPurchase> preparePurchase(HttpServletRequest request,UploadFile file) {
 		
 		List<CustomerPurchase> purchases = new ArrayList<CustomerPurchase>();
 		CustomerPurchaseHelper pHelper = new CustomerPurchaseHelper();
 		
-				purchases = pHelper.preparePurchase(request);
+				purchases = pHelper.preparePurchase(request,file);
 		
 		return purchases ;
 	}
@@ -162,6 +166,18 @@ public class HomeController {
 		}
 		return new ModelAndView("customeredit","customerpurchases",purchases);
 	}
+	
+	@RequestMapping(value="/getImage")
+	
+	public ResponseEntity<byte[]> getImage(@PathVariable(value="id") String customerId) throws IOException, SQLException, java.text.ParseException{
+		System.out.println("Details for customer Id " + customerId);
+		List <CustomerPurchase>purchases = purchaseService.getCustomerPurchases(customerId);
+		final HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.IMAGE_PNG);
+	    
+		return new ResponseEntity<byte[]>(IOUtils.toByteArray(purchases.get(0).getPhoto()),headers,HttpStatus.CREATED);
+	}
+	
 	
 		
 	@RequestMapping(value="/updatepayment")

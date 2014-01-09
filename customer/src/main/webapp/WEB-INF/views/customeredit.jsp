@@ -1,21 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+ <%@include file="common.jsp" %>
 <%@page import="com.powercap.customer.service.CustomerPurchase" %>
 <%@page import="java.util.List" %>
 
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Power Capital Systems - Customer Management</title>
-<link href="resources/fonts.css" rel="stylesheet" type="text/css" />
-<link href="resources/app.css" rel="stylesheet" type="text/css" />
-<link href="resources/style.css" rel="stylesheet" type="text/css" media="screen" />
-<link href="resources/ui-lightness/jquery-ui-1.10.1.custom.css" rel="stylesheet">
-	<script src="resources/jquery-1.9.1.js"></script>
-	<script src="resources/jquery-ui-1.10.1.custom.js"></script>
 	<script type="text/javascript">
 	$(function(){
 		$('#dateoforder').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
@@ -68,7 +56,8 @@
 				  		 '<input type="hidden" name="'+cashorchekName+'" value="'+cc+'"/>';
 			  html = '<div style="width: 190px ;float : left" >'+dop+'</div>'+
 			  		 '<div style="width: 200px ;float : left" >'+amt+'</div>'+
-			  		 '<div style="width: 200px ;float : left" >'+cc+'</div>';
+			  		 '<div style="width: 200px ;float : left" >'+cc+'</div>'+
+			  		'<div class="button deletepayment" style="margin-top : 0px">Delete</div>';
 			  $(this).parent().append(html);
 			  $(this).parent().append(formhtml);
 			  finalbalance = $(this).parent().next().find('[id$=estbalance]').val();
@@ -122,7 +111,7 @@
 <body>
 	<form action="createcustomerpurchase" onsubmit="return checkProdSelection()"  method="post">
 	<div class="containercreate">
-	<h2 align="center" style="width : 550px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Customer</h2>
+	<h2 align="center" style="width : 500px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Customer</h2>
 	  <c:forEach var="purchase" items="${customerpurchases}">
 	     
 	  
@@ -135,7 +124,8 @@
 	   <tr><td>Dealer Name</td></tr>
 	   <tr><td><input type="text" name="dealer" id="dealer" value="<c:out value="${purchase.dealerName}"/>"/></td></tr>
 	   <tr><td><font color="red" >Customer Name*</font></td></tr>
-	   <tr><td><input type="text" name="custname" id="custname" value="<c:out value="${purchase.customerName}"/>"/> </td></tr>
+	   <tr><td><input type="text" name="custname" id="custname" value="<c:out value="${purchase.customerName}"/>"/> </td><td><img src="getImage?id=${purchase.customerId}"/></td></tr>
+	   
 	   <tr><td>Address</td></tr>
 	   <tr><td><textarea name="custaddress" id="custaddress"><c:out value="${purchase.customerAddress}"/></textarea></td></tr>
 	   <tr><td>Email Id <input type="text" name="custemail" id="custemail" value="<c:out value="${purchase.customerEmail}"/>"/></td></tr>
@@ -149,7 +139,7 @@
 	   <tr><td></td></tr>
 	   <tr><td></td></tr>
 	   </table>
-	    <h2 align="center" style="width : 1050px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Products</h2>
+	    <h2 align="center" style="width : 950px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Products</h2>
 	   <table>
 	   <tr>
 	   <td><input type="checkbox" name="solarcapprod" id="solarcapprod"></td>

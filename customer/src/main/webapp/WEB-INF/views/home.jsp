@@ -1,18 +1,7 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+ <%@include file="common.jsp" %>
 <html>
 <head>
-	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-	<title>Power Capital Systems - Customer Management</title>
-	<link href="resources/fonts.css" rel="stylesheet" type="text/css" />
-	<link href="resources/style.css" rel="stylesheet" type="text/css" media="screen" />
-	<script type="text/javascript" 	src="resources/jquery-1.9.1.js"></script>
-	<script type="text/javascript" src="resources/jquery.simplyscroll.js"></script>
-	<link rel="stylesheet" href="resources/jquery.simplyscroll.css" media="all" type="text/css">
+	
 
 <script type="text/javascript">
 (function($) {
@@ -51,7 +40,7 @@ function checkEmpty(){
 function openServiceDetails()
 {
 	//var customerid = $('#customerId').text();
-	window.open('updateservice?customerId='+0 , 'Service Update','height=1500,width=400,resizable=true');
+	window.open('updateservice?customerId='+none , 'Service Update','height=400,width=400');
 	return false;
 }
 </script>
@@ -87,21 +76,22 @@ function openServiceDetails()
 	    	<button type="submit" >Create Customer</button>
 		</form>
 		<!-- <strong>----OR-----</strong>
-		<br>
-		<button id="updateservice" name="Enter Service details" onclick="return openServiceDetails()">Enter Service details</button>
-		 -->
+		<button id="updateservice" name="Service details" onclick="return openServiceDetails()">Service details</button> -->
+		
 	</div>
 	
 	<div id="three-column" class="container">
-		
 		<div class="tbox1">
 			<div class="box-style box-style01">
 				<div class="content">
 					<h2>Payment Due Reminders</h2>
 					<ul id="scroller">
-						<c:forEach var="customer" items="${duepayments}">
-								<li><a href="customeredit?customerId=${customer.customerId}">${customer.customerName}</a></li>
-								<!--li>${custid}</li-->
+						<c:forEach var="customer" items="${dues}">
+						    <c:if test="${customer.key == 'duepayments'}">
+							<c:forEach var="custid" items="${customer.value}">
+								<li>${custid}</li>
+							</c:forEach>
+							</c:if>
 													
 						</c:forEach>
 						<!-- <li><a href="customercreate">Customer 1 Name </a></li>

@@ -31,8 +31,8 @@ public class CustomerPurchaseService {
 		{
 			if(customerId == 0) //If customer is not created , i.e first execution of loop
 			{
-				//String custSQL = "insert into customer(name,dealername,address,emailid,phonenum1,phonenum2,photograh) values (?,?,?,?,?,?)";
-				String custSQL = "insert into customer(name,dealername,address,emailid,phonenum1,phonenum2) values (?,?,?,?,?,?)";
+				String custSQL = "insert into customer(name,dealername,address,emailid,phonenum1,phonenum2,photograph) values (?,?,?,?,?,?,?)";
+				//String custSQL = "insert into customer(name,dealername,address,emailid,phonenum1,phonenum2) values (?,?,?,?,?,?)";
 				Connection conn = DBConnector.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(custSQL, Statement.RETURN_GENERATED_KEYS);
 				if(custPurchase.getCustomerName() == null || "".equals(custPurchase.getCustomerName()))
@@ -84,7 +84,14 @@ public class CustomerPurchaseService {
 				{
 					stmt.setString(6, custPurchase.getCustomerPhone2());
 				}
-								
+				if(custPurchase.getPhoto() == null)
+				{
+					stmt.setNull(7, java.sql.Types.BLOB);
+				}
+				else {
+					stmt.setBlob(7,custPurchase.getPhoto());
+					
+				}
 				//stmt.setBlob(7, photo.getInputStream());
 				stmt.executeUpdate();
 				ResultSet rgen = stmt.getGeneratedKeys();
@@ -308,7 +315,7 @@ public class CustomerPurchaseService {
 	public List<CustomerPurchase> getCustomerPurchases(String customerId) throws SQLException, ParseException {
 			String custSQL = "";
 			if(StringUtils.isNumeric(customerId)) {
-				 custSQL = "select name,customerid,dealername,address,emailid,phonenum1,phonenum2 from customer where customerid = ?";
+				 custSQL = "select name,customerid,dealername,address,emailid,phonenum1,phonenum2,photograph from customer where customerid = ?";
 			}
 			else {
 				custSQL = "select name,customerid,dealername,address,emailid,phonenum1,phonenum2 from customer where name like ?";
@@ -341,6 +348,7 @@ public class CustomerPurchaseService {
 					
 					customerPurchase.setDealerName(rs.getString("dealername"));
 					customerPurchase.setCustomerId(rs.getInt("customerid"));
+					customerPurchase.setPhoto(rs.getBlob("photograph").getBinaryStream());
 					
 				}
 			

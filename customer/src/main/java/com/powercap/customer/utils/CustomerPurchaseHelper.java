@@ -1,5 +1,10 @@
 package com.powercap.customer.utils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,20 +16,22 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.powercap.customer.service.CustomerPurchase;
 import com.powercap.customer.service.PurchasePayment;
+import com.powercap.model.UploadFile;
 
 public class CustomerPurchaseHelper {
 	
 	
-	public List<CustomerPurchase> preparePurchase(HttpServletRequest request)
+	public List<CustomerPurchase> preparePurchase(HttpServletRequest request,UploadFile file)
 	{
 		List<CustomerPurchase> purchases = new ArrayList<CustomerPurchase>();
 		CustomerPurchase purchase = null;
 		if(request.getParameter("solarcapprod") != null && request.getParameter("solarcapprod").toString().equals("on"))
 		{
-			purchase = prepareSolarCapPurchase(request);
+			purchase = prepareSolarCapPurchase(request,file);
 			purchases.add(purchase);
 			
 		}
@@ -406,7 +413,7 @@ public class CustomerPurchaseHelper {
 		return purchase;
 	}
 
-	public CustomerPurchase prepareSolarCapPurchase(HttpServletRequest request)
+	public CustomerPurchase prepareSolarCapPurchase(HttpServletRequest request,UploadFile file)
 	{
 		CustomerPurchase purchase = null;
 		purchase = new CustomerPurchase();
@@ -418,6 +425,29 @@ public class CustomerPurchaseHelper {
 		purchase.setContactno(request.getParameter("contactno"));
 		purchase.setBillno(request.getParameter("billno"));
 		purchase.setOrderformno(request.getParameter("orderformno"));
+		
+		
+		 try {
+			 	MultipartFile photo = file.getCustomerphoto();
+			   InputStream inputStream = photo.getInputStream();
+
+			   File newFile = new File(photo.getName());
+			   if (!newFile.exists()) {
+			    newFile.createNewFile();
+			   }
+			   /*OutputStream outputStream = new FileOutputStream(newFile);
+			   int read = 0;
+			   byte[] bytes = new byte[1024];
+
+			   while ((read = inputStream.read(bytes)) != -1) {
+			    outputStream.write(bytes, 0, read);
+			   }*/
+			   purchase.setPhoto(inputStream);
+			  } catch (IOException e) {
+			   // TODO Auto-generated catch block
+			   e.printStackTrace();
+			  }
+		
 		
 		DateFormat df = new SimpleDateFormat();
 		purchase.setDateofOrder(request.getParameter("dateoforder").toString());

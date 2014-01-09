@@ -1,24 +1,17 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+
+ <%@include file="common.jsp" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Power Capital Systems - Customer Management</title>
-<link href="resources/fonts.css" rel="stylesheet" type="text/css" />
-<link href="resources/app.css" rel="stylesheet" type="text/css" />
-<link href="resources/style.css" rel="stylesheet" type="text/css" media="screen" />
-<link href="resources/ui-lightness/jquery-ui-1.10.1.custom.css" rel="stylesheet">
-	<script src="resources/jquery-1.9.1.js"></script>
-	<script src="resources/jquery-ui-1.10.1.custom.js"></script>
+
 	<script type="text/javascript">
 	$(function(){
-		GLOBAL = { "solarcapacity" : { nameCount : 0 },
-				   "capitalwater" : { nameCount : 0 },
-				   "capitalled" : { nameCount : 0 },
-				   "capitalups" : { nameCount : 0 },
-				   "gasgeyser" : { nameCount : 0 },
-				   "solarlight" : { nameCount : 0 },
+		GLOBAL = { "advancepaymentsolar" : { nameCount : 0 },
+				   "advancepaymentwater" : { nameCount : 0 },
+				   "advancepaymentled" : { nameCount : 0 },
+				   "advancepaymentups" : { nameCount : 0 },
+				   "advancepaymentgeyser" : { nameCount : 0 },
+				   "advancepaymentlight" : { nameCount : 0 },
 				   };
 		$('#dateoforder').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
 		$('#dateofsupply').datepicker({dateFormat : "dd/mm/yy",changeMonth : true,changeYear : true});
@@ -63,10 +56,11 @@
 			  
 			  formhtml = '<input type="hidden" name="'+dateOfPaymentName+'" value="'+dop+'"/>'+
 				  		 '<input type="hidden" name="'+amountName+'" value="'+amt+'"/>'+
-				  		 '<input type="hidden" name="'+cashorchekName+'" value="'+cc+'"/>';
-			  html = '<div style="width: 190px ;float : left" >'+dop+'</div>'+
-			  		 '<div style="width: 200px ;float : left" >'+amt+'</div>'+
-			  		 '<div style="width: 200px ;float : left" >'+cc+'</div>';
+				  		 '<input type="hidden" name="'+cashorchekName+'" value="'+cc+'"/></br>';
+			  html = '<div style="width: 150px ;float : left" >'+dop+'</div>'+
+			  		 '<div style="width: 150px ;float : left" >'+amt+'</div>'+
+			  		 '<div style="width: 150px ;float : left" >'+cc+'</div>'+
+			  		 '<div class="button deletepayment" style="margin-top : 0px">Delete</div>';
 			  $(this).parent().append(html);
 			  $(this).parent().append(formhtml);
 			  finalbalance = $(this).parent().next().find('[id$=estbalance]').val();
@@ -77,8 +71,22 @@
 				  }
 			  
 			  $(this).parent().next().find('[id$=estbalance]').val(finalbalance);
+			  $(this).prev().prev().prev().val("");
+			  $(this).prev().prev().val("");
+			  $(this).prev().val("");
 			 
 		});
+		
+		$(document).on('click','.deletepayment' , function(e){
+											$(this).prev().prev().prev().remove();
+											$(this).prev().prev().remove();
+											$(this).prev().remove();
+											$(this).next().next().next().remove();
+											$(this).next().next().remove();
+											$(this).next().remove();
+											$(this).remove();
+										} 
+						);
 		
 		$(".advpmtclose").click(function(){
 			$(this).parent().hide();
@@ -145,15 +153,15 @@
 <body>
 	
 	<div id="customerform" class="containercreate">
-	<form action="createcustomerpurchase" method="post" onsubmit="return checkProdSelection()">
-	<h2 align="center" style="width : 550px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Customer</h2>
+	<form:form action="createcustomerpurchase" method="post" onsubmit="return checkProdSelection()" enctype="multipart/form-data" modelAttribute="uploadedFile">
+	<h2 align="center" style="width : 500px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Customer</h2>
 	</br>
 	   <table class="customerinfo">
 	   <tr><td>Dealer Name</td></tr>
 	   <tr><td><input type="text" name="dealer" id="dealer"/></td></tr>
 	   <tr><td><font color="red" >Customer Name*</font></td></tr>
 	   <tr><td><input type="text" name="custname" id="custname"/></td></tr>
-	   <!-- tr><td>Upload Photo</td><td><input type="file" name="customerphoto"/></td></tr-->
+	   <tr><td>Upload Photo</td><td><input type="file" name="customerphoto"/></td></tr>
 	   <tr><td>Address</td></tr>
 	   <tr><td><textarea name="custaddress" id="custaddress"></textarea></td></tr>
 	   <tr><td>Email Id <input type="text" name="custemail" id="custemail"/></td></tr>
@@ -170,628 +178,31 @@
 	   <tr><td></td></tr>
 	   </table>
 	   </br>
-	  <h2 align="center" style="width : 1050px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Products</h2>
+	  <h2 align="center" style="width : 950px ; background : none repeat scroll 0 0 #EE0000; border:2px solid #000000;color : #FFFFFF">Products</h2>
 	   </br>
-	   <table class="solarcapacity">
-	   <tr><td><input type="checkbox" name="solarcapprod" id="solarcapprod">Solar Capacity</td><td>Model</td><td>O Cladding</td><td>Warranty</td><td>Free Service</td></tr>
-	   <tr>
-		   <td><select name="solarcapacity" id="solarcapacity">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>100</option>
-		   		<option>150</option>
-		   		<option>200</option>
-		   		<option>250</option>
-		   		<option>300</option>
-		   		<option>500</option>
-		   		<option>1000</option>
-		   	   </select>
-		   </td>
-		   <td><select name="solarcapacitymodel" id="solarcapacitymodel">
-		  		<option selected="selected">Choose one..</option>
-		   		<option>ETC</option>
-		   		<option>FPC</option>
-		   		
-		   	   </select>
-		   </td>
-		   <td><select name="solarcapacitycladding" id="solarcapacitycladding">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>SS</option>
-		   		<option>PC</option>
-		   		
-		   	   </select>
-		   </td>
-		   <td><select name="solarcapacitywarranty" id="solarcapacitywarranty">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option> 
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-		   <td><select name="solarcapacityfreeserv" id="solarcapacityfreeserv">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-		   
-	   </tr>
-	   <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
-	   <tr><td><input type="text" name="solarestunitrate" id="solarestunitrate"/></td><td><input type="text" name="solarestquantity" id="solarestquantity"/></td><td><input type="text" name="solarestvat" id="solarestvat"/></td><td><input type="text" name="solarestdiscount" id="solarestdiscount" onblur="calculateTotalBalance('solarestunitrate','solarestquantity','solarestvat','solarestdiscount','solaresttotal','solarestbalance')"/></td><td><input type="text" name="solaresttotal" id="solaresttotal"/></td><td><input type="text" name="solarestbalance" id="solarestbalance"/></td></tr>
-	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-	   <tr><td><input type="text" name="solarfinalunitrate" id="solarfinalunitrate"/></td><td><input type="text" name="solarfinalquantity" id="solarfinalquantity"/></td><td><input type="text" name="solarfinalvat" id="solarfinalvat"/></td><td><input type="text" name="solarfinaldiscount" id="solarfinaldiscount" onblur="calculateTotalBalance('solarfinalunitrate','solarfinalquantity','solarfinalvat','solarfinaldiscount','solarfinaltotal','solarfinalbalance')"/></td><td><input type="text" name="solarfinaltotal" id="solarfinaltotal"/></td><td><input type="text" name="solarfinalbalance" id="solarfinalbalance"/></td>
-	  	<div name="advancepaymentsolar" id="advancepaymentsolar" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
-			
-				  <h4>Update advance payments</h4>
-				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
-				  <input type="text" name="solardateofpayment" id="solardateofpayment"/>
-				  <input type="text" name="solaramount" id="solaramount"/>
-				  <input type="text" name="solarcashorchek" id="solarcashorchek"/>
-				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
-		</div>
-		</tr>	   
-	   </table>
+	   <jsp:include page="solarcapacity.jsp" flush="true"/>
+	  
 	   </br>
-	   <table class="capitalwater">
-	   <tr><td><input type="checkbox" name="capitwaterpurpprod" id="capitwaterpurpprod">Capital water purifiers</td><td>Warranty</td><td>Free Service</td></tr>
-	   <tr>
-		   <td><select name="capitalwaterpure" id="capitalwaterpure">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>Ultra Pure</option>
-		   		<option>Compaq UV</option>
-		   		<option>UV 100LPH</option>
-		   		<option>UV 100LPH with</option>
-		   		<option>50ltrs SS Tank Storage</option>
-		   		<option>RO Compaq</option>
-		   		<option>RO Pure</option>
-		   		<option>RO 30 LPH</option>
-		   		<option>RO 50 LPH</option>
-		   		<option>RO 50 LPH with</option>
-		   		<option>SS Tank Storage</option>
-		   		<option>RO 100 LPH</option>
-		   	   </select>
-		   </td>
-		    <td><select name="capitalwaterpurewarranty" id="capitalwaterpurewarranty">
-		    	<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-		   <td><select name="capitalwaterpurefreeserv" id="capitalwaterpurefreeserv">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-		   </tr>
-	   <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
-	   <tr><td><input type="text" name="waterpurestunitrate" id="waterpurestunitrate"/></td><td><input type="text" name="waterpurestquantity" id="waterpurestquantity"/></td><td><input type="text" name="waterpurestvat" id="waterpurestvat"/></td><td><input type="text" name="waterpurestdiscount" id="waterpurestdiscount" onblur="calculateTotalBalance('waterpurestunitrate','waterpurestquantity','waterpurestvat','waterpurestdiscount','waterpuresttotal','waterpurestbalance')"/></td><td><input type="text" name="waterpuresttotal" id="waterpuresttotal"/></td><td><input type="text" name="waterpurestbalance" id="waterpurestbalance"/></td></tr>
-	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-	   <tr><td><input type="text" name="waterpurfinalunitrate" id="waterpurfinalunitrate"/></td><td><input type="text" name="waterpurfinalquantity" id="waterpurfinalquantity"/></td><td><input type="text" name="waterpurfinalvat" id="waterpurfinalvat"/></td><td><input type="text" name="waterpurfinaldiscount" id="waterpurfinaldiscount" onblur="calculateTotalBalance('waterpurfinalunitrate','waterpurfinalquantity','waterpurfinalvat','waterpurfinaldiscount','waterpurfinaltotal','waterpurfinalbalance')"/></td><td><input type="text" name="waterpurfinaltotal" id="waterpurfinaltotal"/></td><td><input type="text" name="waterpurfinalbalance" id="waterpurfinalbalance"/></td>
-	   <div name="advancepaymentwater" id="advancepaymentwater" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
-			
-				  <h4>Update advance payments</h4>
-				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
-				  <input type="text" name="waterdateofpayment" id="waterdateofpayment"/>
-				  <input type="text" name="wateramount" id="wateramount"/>
-				  <input type="text" name="watercashorchek" id="watercashorchek"/>
-				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
-		</div>
-	   </tr>
-		</table>
+	   <jsp:include page="capitalwater.jsp" flush="true"/>
+	   
 		</br>
-		<table class="capitalled"> 
-	   <tr><td><input type="checkbox" name="capitledlightpprod" id="capitledlightpprod">Capital LED Light</td><td>Quantity</td><td>Model</td><td>Warranty</td><td>Free Service</td></tr>
-	   <tr>
-		   <td><select multiple name="capitalled" id="capitalled" style="height : 250px">
-		   		<option>3W</option>
-		   		<option>6W</option>
-		   		<option>9W</option>
-		   		<option>12W</option>
-		   		<option>15W</option>
-		   		<option>18W</option>
-		   		<option>21W</option>
-		   		<option>24W</option>
-		   		<option>27W</option>
-		   		<option>30W</option>
-		   		<option>36W</option>
-		   		<option>45W</option>
-		   	   </select>
-		   	   </td>
-		   	   <td>
-		   	    	<input type="text" id="ledquant3W" name="ledquant3W" style="width : 40px;"/><br/>
-		   	    	<input type="text" id="ledquant6W" name="ledquant6W" style="width : 40px;"/><br/>
-		   	    	<input type="text" id="ledquant9W" name="ledquant9W" style="width : 40px;"/><br/>
-		   	    	<input type="text" id="ledquant12W" name="ledquant12W" style="width : 40px;"/><br/>
-		   	    	<input type="text" id="ledquant15W" name="ledquant15W" style="width : 40px;"/><br/>
-		   	    	<input type="text" id="ledquant18W" name="ledquant18W" style="width : 40px;"/><br/>
-		   	    	<input type="text" id="ledquant21W" name="ledquant21W" style="width : 40px;"/><br/>
-		   	    	<input type="text" id="ledquant24W" name="ledquant24W" style="width : 40px;"/><br/>
-		   	    	<input type="text" id="ledquant27W" name="ledquant27W" style="width : 40px;"/><br/>
-		   	    	<input type="text" id="ledquant30W" name="ledquant30W" style="width : 40px;"/><br/>
-		   	    	<input type="text" id="ledquant36W" name="ledquant36W" style="width : 40px;"/><br/>
-		   	    	<input type="text" id="ledquant45W" name="ledquant45W" style="width : 40px;"/><br/>
-		   	    		
-			   </td>
-		  
-		   
-		  <script type="text/javascript">
-		  	$(
-		  		function(){
-		  			var	alloptions = [] ;
-		  			$('#capitalled option').each(
-		  				function(i,v){
-		  					alloptions[i]= $(this).val();
-		  				}		
-		  			);
-		  			
-					/*$('#capitalled').change(
-						function(){
-							that = this;
-							var selectedvals = $(this).val();
-							$('#capitalled option').each(
-					  				function(i,v){
-					  					alloptions[i]= $(this).val();
-					  				}		
-					  			);
+		<jsp:include page="capitalled.jsp" flush="true"/>
+		
+	   </br>
+	   <jsp:include page="capitalups.jsp" flush="true"/>
+	  
+	   </br>
+	   <jsp:include page="gasgeyser.jsp" flush="true"/>
 
-							$.each(selectedvals,function(ind,val){
-								if(val != 'Choose one..')
-									{
-									 var paramname = getInputEleName(val);
-									for(var i=0;i<alloptions.length;i++){
-										if(alloptions[i] == val) {
-											alloptions[i] = '';
-										}
-									 }
-									for(var j=0;j<alloptions.length;j++){
-										var unselectedval = alloptions[j];
-										if(unselectedval != '')
-											{
-												var unselparamname = getInputEleName(unselectedval);
-												$('#'+unselparamname).remove();
-											}
-									}
-									
-									 if($('#'+paramname).length == 0 ){
-										 var input = '<input type="text" id="'+paramname+'" name="'+paramname+'" style="width : 40px;"/></br>';
-										 $(that).parent().next().append(input);
-									 }
-									
-									}
-								
-							});
-						}		
-					);*/
-					$('[id^=ledquant]').on('keyup',function(){
-						var all = $('[id^=ledquant]');
-						var total = 0;
-						for(var i=0 ; i < all.length ; i++) {
-							if(isNaN($(all[i]).val())){ alert("Please enter valid number for quantity "); return;}
-							total += +$(all[i]).val();
-						}
-						$('#capitalledestquantity').val(total);
-						$('#capitalledfinalquantity').val(total);
-					});
-					
-		  		}
-		  	);
-		  	
-		  	
-		  </script> 
-		   <td><select name="capitalledmodel" id="capitalledmodel">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>Indoor</option>
-		   		<option>Outdoor</option>
-		   		
-		   	   </select>
-		   </td>
-			<td><select name="capitalledwarranty" id="capitalledwarranty">
-				<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-		   <td><select name="capitalledfreeserv" id="capitalledfreeserv">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-		   </tr>
-	   <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
-	   <tr><td><input type="text" name="capitalledestunitrate" id="capitalledestunitrate"/></td><td><input type="text" name="capitalledestquantity" id="capitalledestquantity"/></td><td><input type="text" name="capitalledestvat" id="capitalledestvat"/></td><td><input type="text" name="capitalledestdiscount" id="capitalledestdiscount" onblur="calculateTotalBalance('capitalledestunitrate','capitalledestquantity','capitalledestvat','capitalledestdiscount','capitalledesttotal','capitalledestbalance')"/></td><td><input type="text" name="capitalledesttotal" id="capitalledesttotal"/></td><td><input type="text" name="capitalledestbalance" id="capitalledestbalance"/></td></tr>
-	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-	   <tr><td><input type="text" name="capitalledfinalunitrate" id="capitalledfinalunitrate"/></td><td><input type="text" name="capitalledfinalquantity" id="capitalledfinalquantity"/></td><td><input type="text" name="capitalledfinalvat" id="capitalledfinalvat"/></td><td><input type="text" name="capitalledfinaldiscount" id="capitalledfinaldiscount" onblur="calculateTotalBalance('capitalledfinalunitrate','capitalledfinalquantity','capitalledfinalvat','capitalledfinaldiscount','capitalledfinaltotal','capitalledfinalbalance')"/></td><td><input type="text" name="capitalledfinaltotal" id="capitalledfinaltotal"/></td><td><input type="text" name="capitalledfinalbalance" id="capitalledfinalbalance"/></td>
-	   <div name="advancepaymentled" id="advancepaymentled" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
-			
-				  <h4>Update advance payments</h4>
-				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
-				  <input type="text" name="leddateofpayment" id="leddateofpayment"/>
-				  <input type="text" name="ledamount" id="ledamount"/>
-				  <input type="text" name="ledcashorchek" id="ledcashorchek"/>
-				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
-		</div>
-	   </tr>
-	   </table>
 	   </br>
-	   <table class="capitalups">
-	   <tr><td><input type="checkbox" name="capitalupsprod" id="capitalupsprod">UPS</td><td>Battery</td><td>Model</td><td>Warranty</td><td>Free Service</td></tr>
-	   <tr>
-		   <td><select name="capitalups" id="capitalups">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>600 VA</option>
-		   		<option>850 VA</option>
-		   		<option>1 KVA</option>
-		   		<option>1.5 KVA</option>
-		   		<option>2 KVA</option>
-		   		<option>2.5 KVA</option>
-		   		<option>3 KVA</option>
-		   		<option>3.5 KVA</option>
-		   		<option>5 KVA</option>
-		   		<option>7 KVA</option>
-		   		<option>10 KVA</option>
-		   	   </select>
-		   </td>
-		   <td><select name="capitalupsbattery" id="capitalupsbattery">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>7.2 AH</option>
-		   		<option>17 AH</option>
-		   		<option>20 AH</option>
-		   		<option>26 AH</option>
-		   		<option>42 AH</option>
-		   		<option>65 AH</option>
-		   		<option>82 AH</option>
-		   		<option>100 AH</option>
-		   		<option>120 AH</option>
-		   		<option>150 AH</option>
-		   		<option>180 AH</option>
-		   		<option>200 AH</option>
-		   		<option>220 AH</option>
-		   	   </select>
-		   </td>
-		   <td><select name="capitalupsmodel" id="capitalupsmodel">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>SMF</option>
-		   		<option>Automotive</option>
-		   		<option>Flat tubular</option>
-		   		<option>Hard tubular</option>
-		   		<option>Tower tubular</option>
-		   		
-		   	   </select>
-		   </td>
-			<td><select name="capitalupswarranty" id="capitalupswarranty">
-				<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-		   <td><select name="capitalupsfreeserv" id="capitalupsfreeserv">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-		   </tr>
-		   <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-		   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
-		   <tr><td><input type="text" name="capitalupsestunitrate" id="capitalupsestunitrate"/></td><td><input type="text" name="capitalupsestquantity" id="capitalupsstquantity"/></td><td><input type="text" name="capitalupsestvat" id="capitalupsestvat"/></td><td><input type="text" name="capitalupsestdiscount" id="capitalupsestdiscount" onblur="calculateTotalBalance('capitalupsestunitrate','capitalupsestquantity','capitalupsestvat','capitalupsestdiscount','capitalupsesttotal','capitalupsestbalance')"/></td><td><input type="text" name="capitalupsesttotal" id="capitalupsesttotal"/></td><td><input type="text" name="capitalupsestbalance" id="capitalupsestbalance"/></td></tr>
-		   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
-		   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-		   <tr><td><input type="text" name="capitalupsfinalunitrate" id="capitalupsfinalunitrate"/></td><td><input type="text" name="capitalupsfinalquantity" id="capitalupsfinalquantity"/></td><td><input type="text" name="capitalupsfinalvat" id="capitalupsfinalvat"/></td><td><input type="text" name="capitalupsfinaldiscount" id="capitalupsfinaldiscount" onblur="calculateTotalBalance('capitalupsfinalunitrate','capitalupsfinalquantity','capitalupsfinalvat','capitalupsfinaldiscount','capitalupsfinaltotal','capitalupsfinalbalance')"/></td><td><input type="text" name="capitalupsfinaltotal" id="capitalupsfinaltotal"/></td><td><input type="text" name="capitalupsfinalbalance" id="capitalupsfinalbalance"/></td>
-		   <div name="advancepaymentups" id="advancepaymentups" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
-			
-				  <h4>Update advance payments</h4>
-				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
-				  <input type="text" name="upsdateofpayment" id="upsdateofpayment"/>
-				  <input type="text" name="upsamount" id="upsamount"/>
-				  <input type="text" name="upscashorchek" id="upscashorchek"/>
-				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
-			</div>
-		   </tr>
-		</table>
-	   </br>
-	   <table class="gasgeyser">
-	   <tr><td><input type="checkbox" name="gasgeyserpprod" id="gasgeyserprod">Gas Geyser Model</td><td>Warranty</td><td>Free Service</td></tr>
-	   <tr>
-	   	<td><select name="capitalgasgeyser" id="capitalgasgeyser">
-	   			<option selected="selected">Choose one..</option>
-		   		<option>DELUXE</option>
-		   		<option>Gold</option>
-		   		<option>Others</option>
-		   	   </select>
-		   </td>
-		   <td><select name="capitalgasgeyserwarranty" id="capitalgasgeyserwarranty">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-		   <td><select name="capitalgasgeyserfreeserv" id="capitalgasgeyserfreeserv">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-	   </tr>
-	    <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
-	   <tr><td><input type="text" name="capitalgasgeyserestunitrate" id="capitalgasgeyserestunitrate"/></td><td><input type="text" name="capitalgasgeyserestquantity" id="capitalgasgeyserstquantity"/></td><td><input type="text" name="capitalgasgeyserestvat" id="capitalgasgeyserestvat"/></td><td><input type="text" name="capitalgasgeyserestdiscount" id="capitalgasgeyserestdiscount" onblur="calculateTotalBalance('capitalgasgeyserestunitrate','capitalgasgeyserestquantity','capitalgasgeyserestvat','capitalgasgeyserestdiscount','capitalgasgeyseresttotal','capitalgasgeyserestbalance')"/></td><td><input type="text" name="capitalgasgeyseresttotal" id="capitalgasgeyseresttotal"/></td><td><input type="text" name="capitalgasgeyserestbalance" id="capitalgasgeyserestbalance"/></td></tr>
-	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-	   <tr><td><input type="text" name="capitalgasgeyserfinalunitrate" id="capitalgasgeyserfinalunitrate"/></td><td><input type="text" name="capitalgasgeyserfinalquantity" id="capitalgasgeyserfinalquantity"/></td><td><input type="text" name="capitalgasgeyserfinalvat" id="capitalgasgeyserfinalvat"/></td><td><input type="text" name="capitalgasgeyserfinaldiscount" id="capitalgasgeyserfinaldiscount" onblur="calculateTotalBalance('capitalgasgeyserfinalunitrate','capitalgasgeyserfinalquantity','capitalgasgeyserfinalvat','capitalgasgeyserfinaldiscount','capitalgasgeyserfinaltotal','capitalgasgeyserfinalbalance')"/></td><td><input type="text" name="capitalgasgeyserfinaltotal" id="capitalgasgeyserfinaltotal"/></td><td><input type="text" name="capitalgasgeyserfinalbalance" id="capitalgasgeyserfinalbalance"/></td>
-	   <div name="advancepaymentgeyser" id="advancepaymentgeyser" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
-			
-				  <h4>Update advance payments</h4>
-				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
-				  <input type="text" name="geyserdateofpayment" id="geyserdateofpayment"/>
-				  <input type="text" name="geyseramount" id="geyseramount"/>
-				  <input type="text" name="geysercashorchek" id="geysercashorchek"/>
-				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
-		</div>
-	   </tr>
-	   </table>
-	   </br>
-	   <table class="solarlight">
-	   <tr><td><input type="checkbox" name="solarlightprod" id="solarlightprod">Solar Light</td><td>Battery</td><td>Battery Model</td><td>Quantity</td><td>LED lights</td><td>Quantity</td><td>Backup</td><td>Warranty</td><td>Free Service</td></tr>
-	   <tr>
-		   <td><select name="capitalsolarlight" id="capitalsolarlight">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>2 Light Kit</option>
-		   		<option>5 Light Kit</option>
-		   		<option>7 Light Kit</option>
-		   		<option>10 Light Kit</option>
-		   		<option>12 Light Kit</option>
-		   		<option>15 Light Kit</option>
-		   		<option>Street Light</option>
-		   		<option>AC Light</option>
-		   		<option>200W Power Pack</option>
-		   		<option>500W Power Pack</option>
-		   		<option>800W Power Pack</option>
-		   		<option>1000W Power Pack</option>
-		   		<option>1500W Power Pack</option>
-		   		<option>2000W Power Pack</option>
-		   	   </select>
-		   </td>
-		   <td><select name="capitalsolarlightbattery" id="capitalsolarlightbattery">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>7.2 AH</option>
-		   		<option>17 AH</option>
-		   		<option>20 AH</option>
-		   		<option>26 AH</option>
-		   		<option>42 AH</option>
-		   		<option>65 AH</option>
-		   		<option>82 AH</option>
-		   		<option>100 AH</option>
-		   		<option>120 AH</option>
-		   		<option>150 AH</option>
-		   		<option>180 AH</option>
-		   		<option>200 AH</option>
-		   		<option>220 AH</option>
-		   	   </select>
-		   </td>
-		   <td><select name="capitalsolarlightmodel" id="capitalsolarlightmodel">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>SMF</option>
-		   		<option>Automotive</option>
-		   		<option>Flat tubular</option>
-		   		<option>Hard tubular</option>
-		   		<option>Tower tubular</option>
-		   		
-		   	   </select>
-		   </td>
-		   <td>
-		   	<select name="capitalsolarlightquant" id="capitalsolarlightquant">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   		<option>11</option>
-		   		<option>12</option>
-		   		<option>13</option>
-		   		<option>14</option>
-		   		<option>15</option>
-		   		<option>16</option>
-		   		<option>17</option>
-		   		<option>18</option>
-		   		<option>19</option>
-		   		<option>20</option>
-		   		<option>21</option>
-		   		<option>22</option>
-		   		<option>23</option>
-		   		<option>24</option>
-		   	   </select>
-		   </td>
-		    <td><select name="capitalsolarlightled" id="capitalsolarlightled">
-		    	<option selected="selected">Choose one..</option>
-		   		<option>3W</option>
-		   		<option>6W</option>
-		   		<option>9W</option>
-		   		<option>12W</option>
-		   		<option>15W</option>
-		   		<option>18W</option>
-		   		<option>21W</option>
-		   		<option>24W</option>
-		   		<option>27W</option>
-		   		<option>30W</option>
-		   		<option>36W</option>
-		   		<option>45W</option>
-		   	   </select>
-		   </td>
-		   <td><input type="text" width="10px" maxlength="4" name="capitalsolarlightledquant" id="capitalsolarlightledquant"/></td>
-		     <td>
-		   	<select name="capitalsolarlightledbackup" id="capitalsolarlightledbackup">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   		<option>11</option>
-		   		<option>12</option>
-		   		<option>13</option>
-		   		<option>14</option>
-		   		<option>15</option>
-		   		<option>16</option>
-		   		<option>17</option>
-		   		<option>18</option>
-		   		<option>19</option>
-		   		<option>20</option>
-		   		<option>21</option>
-		   		<option>22</option>
-		   		<option>23</option>
-		   		<option>24</option>
-		   	   </select>
-		   </td>
-			<td><select name="capitalsolarlightledwarranty" id="capitalsolarlightledwarranty">
-				<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-		   <td><select name="capitalsolarlightledfreeserv" id="capitalsolarlightledfreeserv">
-		   		<option selected="selected">Choose one..</option>
-		   		<option>1</option>
-		   		<option>2</option>
-		   		<option>3</option>
-		   		<option>4</option>
-		   		<option>5</option>
-		   		<option>6</option>
-		   		<option>7</option>
-		   		<option>8</option>
-		   		<option>9</option>
-		   		<option>10</option>
-		   	   </select>
-		   </td>
-		   </tr>
-	   <tr><td>***************************</td><td>Estimated Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance(click inside the box below to update advance payments)</td></tr>
-	   <tr><td><input type="text" name="capitalsolarlightestunitrate" id="capitalsolarlightestunitrate"/></td><td><input type="text" name="capitalsolarlightestquantity" id="capitalsolarlightestquantity"/></td><td><input type="text" name="capitalsolarlightestvat" id="capitalsolarlightestvat"/></td><td><input type="text" name="capitalsolarlightestdiscount" id="capitalsolarlightestdiscount" onblur="calculateTotalBalance('capitalsolarlightestunitrate','capitalsolarlightestquantity','capitalsolarlightestvat','capitalsolarlightestdiscount','capitalsolarlightesttotal','capitalsolarlightestbalance')"/></td><td><input type="text" name="capitalsolarlightesttotal" id="capitalsolarlightesttotal"/></td><td><input type="text" name="capitalsolarlightestbalance" id="capitalsolarlightestbalance"/></td></tr>
-	   <tr><td>***************************</td><td>Final Bill</td><td>***************************</td></tr>
-	   <tr><td>Unit Rate</td><td>Quantity</td><td>VAT%</td><td>Discount</td><td>Total</td><td>Balance</td></tr>
-	   <tr><td><input type="text" name="capitalsolarlightfinalunitrate" id="capitalsolarlightfinalunitrate"/></td><td><input type="text" name="capitalsolarlightfinalquantity" id="capitalsolarlightfinalquantity"/></td><td><input type="text" name="capitalsolarlightfinalvat" id="capitalsolarlightfinalvat"/></td><td><input type="text" name="capitalsolarlightfinaldiscount" id="capitalsolarlightfinaldiscount" onblur="calculateTotalBalance('capitalsolarlightfinalunitrate','capitalsolarlightfinalquantity','capitalsolarlightfinalvat','capitalsolarlightfinaldiscount','capitalsolarlightfinaltotal','capitalsolarlightfinalbalance')"/></td><td><input type="text" name="capitalsolarlightfinaltotal" id="capitalsolarlightfinaltotal"/></td><td><input type="text" name="capitalsolarlightfinalbalance" id="capitalsolarlightfinalbalance"/></td>
-	   <div name="advancepaymentlight" id="advancepaymentlight" style="display:none ; width: 700px ; border : 2px solid;overflow : auto">
-			
-				  <h4>Update advance payments</h4>
-				  <div style="width: 190px ;float : left">Date of payment</div><div style="width: 200px;float : left">Amount(INR)</div><div style="width: 200px;float : left">Cash or Checque</div></br>
-				  <input type="text" name="lightdateofpayment" id="lightdateofpayment"/>
-				  <input type="text" name="lightamount" id="lightamount"/>
-				  <input type="text" name="lightcashorchek" id="lightcashorchek"/>
-				  <div class="button advpmtsave">Save</div> <div class="button advpmtclose">Close</div>
-		</div>
-	   </tr>
-	
-	   </table>
+	    <jsp:include page="solarlight.jsp" flush="true"/>
+	   
 	   <br><br>
 	   <table>
 	   <tr><td><button type="submit">Submit</button></td><td><button type="reset">Reset</button></td><td><button type="button" onclick="javascript:document.location.href = 'home';">Back</button></td></tr>
 	   </table>
 	   
-	   </form>
+	   </form:form>
 	</div>
 	
 	

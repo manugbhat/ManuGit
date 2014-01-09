@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+ "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+ "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="com.storemanager.store.domain.Store" table="Store">
+			<id column="id" name="id" type="java.lang.Long"></id>
+			<property column="date" name="date" type="java.lang.String"/>
+			<property column="PRODTYPE" name="producttype" type="java.lang.String"/>
+			<property column="CONSIGNEE" name="consigneename" type="java.lang.String"/>
+			<property column="ORDERNO" name="ordernumber" type="java.lang.String"/>
+			<property column="PRODUCT" name="productin" type="java.lang.String"/>
+			<property column="PRODUCTBAL" name="productbalance" type="java.lang.Long"/>
+			<property column="CARRIER" name="carriername" type="java.lang.String"/>
+	</class>
+</hibernate-mapping>
