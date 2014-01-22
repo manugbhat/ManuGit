@@ -14,8 +14,7 @@
 
 	<script type="text/javascript" src="resources/jquery-1.9.1.js"></script>
 	<script type="text/javascript" src="resources/jquery-ui-1.10.1.custom.js"></script>
-	<script type="text/javascript" src="resources/highcharts.js"></script>
-	<script type="text/javascript" src="resources/exporting.js"></script>
+	
 	
 </head>
 <body>

@@ -16,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.storemanager.store.model.CheckOut;
 import com.storemanager.store.model.CheckinForm;
+import com.storemanager.store.model.ClientHistory;
+import com.storemanager.store.model.PieChartData;
 import com.storemanager.store.service.StoreService;
 
 @Controller
@@ -40,8 +42,15 @@ public class StoreController {
 	}
 	
 	@RequestMapping(value="/data/dashboard")
-	public @ResponseBody List<CheckinForm> goDashboard(HttpServletResponse response) throws IOException{
-		List<CheckinForm> storeItems = store.fetchAllFromStore();
+	public ModelAndView goDashboard(HttpServletResponse response) throws IOException{
+		//List<CheckinForm> storeItems = store.fetchAllFromStore();
+		return new ModelAndView("dashboard");
+	}
+
+	
+	@RequestMapping(value="/data/charts")
+	public @ResponseBody List getChart(HttpServletResponse response) throws IOException{
+		List<PieChartData> storeItems = store.getChartData();
 		return storeItems;
 	}
 
@@ -79,6 +88,8 @@ public class StoreController {
 	
 	@RequestMapping(value="/data/clienthistory")
 	public ModelAndView getHistory(HttpServletResponse response) throws IOException{
-		return new ModelAndView("redirect:store");
+		List<ClientHistory> history = store.fetchClientHistory();
+		System.out.println("got results for client history --"+history.size());
+		return new ModelAndView("history","historyItems",history);
 	}
 }

@@ -38,15 +38,16 @@ $(function(){
 			$('#totalcharge').val(totalcharges);
 		
 	});
+	function validateNumber(value) {
+		if (isNaN(value)) {
+			alert("Please enter a valid number");
+			return false;
+		}
+		return true;
+	}
 });
 
-function validateNumber(value) {
-	if (isNaN(value)) {
-		alert("Please enter a valid number");
-		return false;
-	}
-	return true;
-}
+
 </script>
 </head>
 <body>
