@@ -61,9 +61,9 @@
 	</bean>
 	
 	<bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-        <property name="url" value="jdbc:hsqldb:hsql://localhost:9001" />
-        <property name="username" value="sa" />
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/store" />
+        <property name="username" value="root" />
         <property name="password" value="" />
         <property name="initialSize" value="1" />
         <property name="maxActive" value="5" />
@@ -80,7 +80,7 @@
         </property>
 		<property name="hibernateProperties">
 			<props>
-				<prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
 				
 			</props>

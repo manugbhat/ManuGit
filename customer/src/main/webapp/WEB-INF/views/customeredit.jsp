@@ -124,8 +124,8 @@
 	   <tr><td>Dealer Name</td></tr>
 	   <tr><td><input type="text" name="dealer" id="dealer" value="<c:out value="${purchase.dealerName}"/>"/></td></tr>
 	   <tr><td><font color="red" >Customer Name*</font></td></tr>
-	   <tr><td><input type="text" name="custname" id="custname" value="<c:out value="${purchase.customerName}"/>"/> </td><td><img src="getImage?id=${purchase.customerId}"/></td></tr>
-	   
+	   <tr><td><input type="text" name="custname" id="custname" value="<c:out value="${purchase.customerName}"/>"/> </td></tr>
+	   <tr><td><img src="<c:url value="getImage?customerId=${purchase.customerId}"/>" height="130" width="130"/></td></tr>
 	   <tr><td>Address</td></tr>
 	   <tr><td><textarea name="custaddress" id="custaddress"><c:out value="${purchase.customerAddress}"/></textarea></td></tr>
 	   <tr><td>Email Id <input type="text" name="custemail" id="custemail" value="<c:out value="${purchase.customerEmail}"/>"/></td></tr>

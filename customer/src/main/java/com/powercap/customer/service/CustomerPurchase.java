@@ -45,6 +45,7 @@ public class CustomerPurchase {
 	private double estbalance;
 	private double finalbalance;
 	private InputStream photo;
+	private byte[] photoBytes;
 	private List<PurchasePayment> payments;
 	
 	
@@ -221,6 +222,12 @@ public class CustomerPurchase {
 	}
 	public void setLedLight(String ledLight) {
 		this.ledLight = ledLight;
+	}
+	public byte[] getPhotoBytes() {
+		return photoBytes;
+	}
+	public void setPhotoBytes(byte[] photoBytes) {
+		this.photoBytes = photoBytes;
 	}
 	public String getBackup() {
 		return backup;

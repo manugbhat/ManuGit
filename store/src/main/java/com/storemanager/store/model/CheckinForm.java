@@ -16,7 +16,7 @@ public class CheckinForm {
 	@GeneratedValue( strategy = GenerationType.AUTO )
 	private Long Id;
 	
-	@Column(name="DATE")
+	@Column(name="DATEOFCHECKIN")
 	private String date;
 	
 	@Column(name="PRODTYPE")

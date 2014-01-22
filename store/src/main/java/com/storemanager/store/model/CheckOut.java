@@ -18,7 +18,7 @@ public class CheckOut {
 	@GeneratedValue( strategy = GenerationType.AUTO )
 	private Long Id;
 	
-	@Column(name="DATE")
+	@Column(name="DATEOFCHECKOUT")
 	private String date;
 	
 	@Column(name="PRODTYPE")

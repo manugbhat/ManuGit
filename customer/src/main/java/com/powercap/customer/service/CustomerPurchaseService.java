@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -312,7 +313,7 @@ public class CustomerPurchaseService {
 		
 	}
 
-	public List<CustomerPurchase> getCustomerPurchases(String customerId) throws SQLException, ParseException {
+	public List<CustomerPurchase> getCustomerPurchases(String customerId) throws SQLException, ParseException, IOException {
 			String custSQL = "";
 			if(StringUtils.isNumeric(customerId)) {
 				 custSQL = "select name,customerid,dealername,address,emailid,phonenum1,phonenum2,photograph from customer where customerid = ?";
@@ -348,15 +349,16 @@ public class CustomerPurchaseService {
 					
 					customerPurchase.setDealerName(rs.getString("dealername"));
 					customerPurchase.setCustomerId(rs.getInt("customerid"));
-					customerPurchase.setPhoto(rs.getBlob("photograph").getBinaryStream());
+					byte[] photo = IOUtils.toByteArray(rs.getBlob("photograph").getBinaryStream());
+					customerPurchase.setPhotoBytes(photo);
 					
 				}
 			
-				conn.close();
 				if(!StringUtils.isNumeric(customerId)) {
 					customerPurchases.add(customerPurchase);
 					return customerPurchases;
 				}
+				conn.close();
 				
 			}
 			Connection conn1 = DBConnector.getConnection();
@@ -409,9 +411,6 @@ public class CustomerPurchaseService {
 				customerPurchases.add(customerPurchase);
 			}
 			conn1.close();
-			
-			
-		    	
 		
 		return customerPurchases;
 	}

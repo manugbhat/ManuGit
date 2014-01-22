@@ -1,6 +1,7 @@
 package com.powercap.customer.controller;
 
 import java.io.IOException;
+import java.net.Authenticator.RequestorType;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -159,7 +161,7 @@ public class HomeController {
 	@RequestMapping(value="/customeredit")
 	
 	public ModelAndView editCustomer(@RequestParam String customerId) throws IOException, SQLException, java.text.ParseException{
-		System.out.println("Details for customer Id " + customerId);
+		System.out.println("editCustomer -- Details for customer Id " + customerId);
 		List <CustomerPurchase>purchases = purchaseService.getCustomerPurchases(customerId);
 		if(!StringUtils.isNumeric(customerId)) {
 			return new ModelAndView("customerpick","customerpurchases",purchases);
@@ -167,15 +169,17 @@ public class HomeController {
 		return new ModelAndView("customeredit","customerpurchases",purchases);
 	}
 	
-	@RequestMapping(value="/getImage")
-	
-	public ResponseEntity<byte[]> getImage(@PathVariable(value="id") String customerId) throws IOException, SQLException, java.text.ParseException{
+	@RequestMapping(value="/getImage",produces=MediaType.IMAGE_JPEG_VALUE)
+	//@RequestMapping(value="/getimage",method=RequestMethod.GET)
+	public ResponseEntity<byte[]> getImage(@RequestParam String customerId) throws IOException, SQLException, java.text.ParseException{
+	//public ModelAndView getImage(@RequestParam String customerId){
 		System.out.println("Details for customer Id " + customerId);
 		List <CustomerPurchase>purchases = purchaseService.getCustomerPurchases(customerId);
 		final HttpHeaders headers = new HttpHeaders();
 	    headers.setContentType(MediaType.IMAGE_PNG);
-	    
-		return new ResponseEntity<byte[]>(IOUtils.toByteArray(purchases.get(0).getPhoto()),headers,HttpStatus.CREATED);
+	    //System.out.println("Photo  "+IOUtils.toByteArray(purchases.get(0).getPhoto()));
+		return new ResponseEntity<byte[]>(purchases.get(0).getPhotoBytes(),headers,HttpStatus.CREATED);
+		//return new ModelAndView("updatepayment");
 	}
 	
 	
